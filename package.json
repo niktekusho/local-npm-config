@@ -4,7 +4,7 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "coverage": "nyc ava",
+        "coverage": "nyc --all --reporter lcov --reporter text ava",
         "release": "np",
         "prepublishOnly": "yarpm test",
         "test": "xo && ava"
@@ -23,7 +23,8 @@
     "author": "",
     "license": "MIT",
     "devDependencies": {
-        "ava": "^1.2.0",
+        "ava": "^1.2.1",
+        "mock-require": "^3.0.3",
         "np": "^3.1.0",
         "nyc": "^13.1.0",
         "xo": "^0.24.0",

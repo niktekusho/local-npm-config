@@ -1,3 +1,5 @@
+const {URL} = require('url');
+
 function validateUrl(url) {
 	try {
 		// eslint-disable-next-line no-new
