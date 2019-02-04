@@ -1,0 +1,44 @@
+{
+    "name": "local-npm-config",
+    "version": "0.1.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "coverage": "nyc ava",
+        "release": "np",
+        "prepublishOnly": "yarpm test",
+        "test": "xo && ava"
+    },
+    "keywords": [
+        "npm",
+        "npmjs",
+        "local",
+        "configuration",
+        "config",
+        "management",
+        "local configuration",
+        "configuration files",
+        "config files"
+    ],
+    "author": "",
+    "license": "MIT",
+    "devDependencies": {
+        "ava": "^1.2.0",
+        "np": "^3.1.0",
+        "nyc": "^13.1.0",
+        "xo": "^0.24.0",
+        "yarpm": "^0.2.1"
+    },
+    "dependencies": {
+        "execa": "^1.0.0",
+        "flat": "^4.1.0",
+        "fuse.js": "^3.3.0",
+        "inquirer": "^6.2.1",
+        "inquirer-autocomplete-prompt": "^1.0.1",
+        "prepend-cwd": "^1.0.0",
+        "spdx-license-list": "^5.0.0"
+    },
+    "engines": {
+        "node": ">=8"
+    }
+}
