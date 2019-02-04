@@ -1,28 +1,12 @@
-const flatten = require('flat');
-
 const prompt = require('./prompt');
 const questions = require('./questions');
 const npmConfigSet = require('./npm.config.setter');
-
-function configFilter(config) {
-	const configToSet = [];
-
-	const flatConfig = flatten(config);
-
-	Object.keys(flatConfig).forEach(key => {
-		const value = flatConfig[key];
-		if (value && value.trim().length > 0) {
-			configToSet.push({config: key, value});
-		}
-	});
-
-	return configToSet;
-}
+const transformConfig = require('./config.transformer');
 
 async function main() {
 	const answers = await prompt(questions);
 
-	const filteredConfig = configFilter(answers);
+	const filteredConfig = transformConfig(answers);
 
 	console.log(filteredConfig);
 
