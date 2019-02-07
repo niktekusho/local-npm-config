@@ -1,7 +1,31 @@
 #!/usr/bin/env node
 
+const meow = require('meow');
+
+const loggerFactory = require('./logger');
 const main = require('.');
 
-main()
-	.then(() => console.log('Successfully configured npm!'))
-	.catch(error => console.error(`Unexpected error: ${error.message}`));
+const cli = meow(`
+Usage:
+$ local-npm-config
+
+Options:
+	  --verbose        Display debug info.
+`, {
+	flags: {
+		verbose: {
+			type: 'boolean',
+			default: false
+		}
+	}
+});
+
+const logger = loggerFactory(cli.flags.verbose);
+
+if (cli.flags.verbose) {
+	logger.info('Verbose mode enabled');
+}
+
+main(logger)
+	.then(() => logger.success('Successfully configured npm!'))
+	.catch(error => logger.error(`Unexpected error: ${error.message}`));
