@@ -18,11 +18,18 @@ mock(promptModule, async () => answers);
 const configSetterModule = '../src/npm.config.setter';
 mock(configSetterModule, async () => undefined);
 
+const loggerFactoryMock = logger => ({
+	debug: logger,
+	error: logger,
+	log: logger,
+	warn: logger
+});
+
 const main = require('../src');
 
 test('prompt should be an async function', async t => {
 	try {
-		await main();
+		await main(loggerFactoryMock(t.log));
 		t.pass();
 		clearMock();
 	} catch (error) {

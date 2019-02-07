@@ -36,7 +36,9 @@
         "fuse.js": "^3.3.0",
         "inquirer": "^6.2.1",
         "inquirer-autocomplete-prompt": "^1.0.1",
+        "meow": "^5.0.0",
         "prepend-cwd": "^1.0.0",
+        "signale": "^1.3.0",
         "spdx-license-list": "^5.0.0"
     },
     "engines": {
