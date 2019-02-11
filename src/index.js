@@ -3,7 +3,7 @@ const questions = require('./questions');
 const npmConfigSet = require('./npm.config.setter');
 const transformConfig = require('./config.transformer');
 
-async function main(logger) {
+async function main(logger, dryrun) {
 	const answers = await prompt(questions);
 
 	logger.debug(answers);
@@ -16,7 +16,7 @@ async function main(logger) {
 
 	logger.debug(initConfig);
 
-	const commandsToRun = initConfig.map(({config, value}) => npmConfigSet(config, value, logger));
+	const commandsToRun = initConfig.map(({config, value}) => npmConfigSet(config, value, logger, dryrun));
 
 	await Promise.all(commandsToRun);
 }

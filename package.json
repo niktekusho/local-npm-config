@@ -25,6 +25,7 @@
         "inquirer": "^6.2.1",
         "inquirer-autocomplete-prompt": "^1.0.1",
         "meow": "^5.0.0",
+        "meow-shorts": "^0.0.1-0",
         "prepend-cwd": "^1.0.0",
         "signale": "^1.3.0",
         "spdx-license-list": "^5.0.0"
@@ -50,10 +51,12 @@
     "bugs": {
         "url": "https://github.com/niktekusho/local-npm-config/issues"
     },
-    "contributors": [{
-        "name": "Nicola Dal Maso",
-        "url": "https://github.com/niktekusho/"
-    }],
+    "contributors": [
+        {
+            "name": "Nicola Dal Maso",
+            "url": "https://github.com/niktekusho/"
+        }
+    ],
     "homepage": "https://github.com/niktekusho/local-npm-config",
     "repository": {
         "type": "git",
