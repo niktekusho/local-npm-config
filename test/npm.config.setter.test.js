@@ -15,3 +15,16 @@ test('setter should call execa with "npm set config value"', async t => {
 	t.deepEqual(args[1], ['set', 'testConfig', 'testValue']);
 	mock.stop('execa');
 });
+
+test('setter should not call execa when dryrun option is true', async t => {
+	let infoCalled = false;
+	const mockedLogger = {
+		debug: () => {},
+		info: () => {
+			infoCalled = true;
+		}
+	};
+	const args = await setter('testConfig', 'testValue', mockedLogger, true);
+	t.is(args, undefined);
+	t.true(infoCalled);
+});

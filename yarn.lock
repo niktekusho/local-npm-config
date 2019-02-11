@@ -3186,6 +3186,11 @@ mem@^1.1.0:
   dependencies:
     mimic-fn "^1.0.0"
 
+meow-shorts@^0.0.1-0:
+  version "0.0.1-0"
+  resolved "https://registry.yarnpkg.com/meow-shorts/-/meow-shorts-0.0.1-0.tgz#6dba5e91c6b2ff1a2060adc3a7a6d45fa2ad0176"
+  integrity sha512-3bvme+oLnitOblULdtumYDGfc7O6dgDt5mQCtlSQA0QVUX2JWLCI3PwUTf8c9fm0vjTxQa+PX62ZDqRAn0kw/A==
+
 meow@^5.0.0:
   version "5.0.0"
   resolved "https://registry.yarnpkg.com/meow/-/meow-5.0.0.tgz#dfc73d63a9afc714a5e371760eb5c88b91078aa4"
