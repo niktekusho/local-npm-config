@@ -1,7 +1,7 @@
 {
     "name": "local-npm-config",
     "version": "0.1.0",
-    "description": "",
+    "description": "Manage your local npm configuration across multiple machines easily!",
     "main": "index.js",
     "scripts": {
         "coverage": "nyc --all --reporter lcov --reporter text ava",
@@ -9,18 +9,6 @@
         "prepublishOnly": "yarpm test",
         "test": "xo && ava"
     },
-    "keywords": [
-        "npm",
-        "npmjs",
-        "local",
-        "configuration",
-        "config",
-        "management",
-        "local configuration",
-        "configuration files",
-        "config files"
-    ],
-    "author": "",
     "license": "MIT",
     "devDependencies": {
         "ava": "^1.2.1",
@@ -43,5 +31,32 @@
     },
     "engines": {
         "node": ">=8"
+    },
+    "keywords": [
+        "npm",
+        "npmjs",
+        "local",
+        "configuration",
+        "config",
+        "management",
+        "local configuration",
+        "configuration files",
+        "config files"
+    ],
+    "author": {
+        "name": "Nicola Dal Maso",
+        "url": "https://github.com/niktekusho/"
+    },
+    "bugs": {
+        "url": "https://github.com/niktekusho/local-npm-config/issues"
+    },
+    "contributors": [{
+        "name": "Nicola Dal Maso",
+        "url": "https://github.com/niktekusho/"
+    }],
+    "homepage": "https://github.com/niktekusho/local-npm-config",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/niktekusho/local-npm-config"
     }
 }
