@@ -21,6 +21,7 @@ mock(configSetterModule, async () => undefined);
 const loggerFactoryMock = logger => ({
 	debug: logger,
 	error: logger,
+	info: logger,
 	log: logger,
 	warn: logger
 });

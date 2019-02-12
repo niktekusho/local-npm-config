@@ -1,0 +1,47 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "local-npm-config/config.schema.json",
+    "title": "local-npm-config JSON Schema",
+    "description": "Schema used to validate local-npm-config JSON files",
+    "type": "object",
+    "properties": {
+        "author": {
+            "description": "npm info about the author of the module",
+            "type": "object",
+            "properties": {
+                "email": {
+                    "description": "Author's email that will be set in package.json",
+                    "type": "string",
+                    "format": "email"
+                },
+                "name": {
+                    "description": "Author's full name that will be set in package.json",
+                    "type": "string",
+                    "minLength": 3
+                },
+                "url": {
+                    "description": "Author's web site url that will be set in package.json",
+                    "type": "string",
+                    "format": "uri"
+                }
+            },
+            "required": ["name"]
+        },
+        "license": {
+            "description": "License the author decides to use for his projects",
+            "type": "string"
+        },
+        "version": {
+            "description": "Version the author decides to start when he creates a new project",
+            "type": "string",
+            "enum": [
+                "",
+                "0.0.0",
+                "0.0.1",
+                "0.1.0",
+                "1.0.0"
+            ]
+        }
+    },
+    "required": ["author"]
+}
