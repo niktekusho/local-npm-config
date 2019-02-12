@@ -4,7 +4,7 @@ const meow = require('meow');
 
 const meowShortcuts = require('meow-shorts');
 
-const loggerFactory = require('./logger');
+const loggerFactory = require('./utils/logger');
 const main = require('.');
 
 const cli = meow(`

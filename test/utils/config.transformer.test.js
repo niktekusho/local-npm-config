@@ -1,6 +1,6 @@
 import test from 'ava';
 
-const transformer = require('../src/config.transformer');
+const transformer = require('../../src/utils/config.transformer');
 
 const answers = {
 	author: {

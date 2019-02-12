@@ -39,6 +39,17 @@ test('prompt should be an async function', async t => {
 	}
 });
 
+test('main module should listen to options', async t => {
+	try {
+		await main(loggerFactoryMock(t.log), {dryrun: true, exportConfig: true, verbose: true});
+		t.pass();
+		clearMock();
+	} catch (error) {
+		clearMock();
+		t.fail(error);
+	}
+});
+
 function clearMock() {
 	mock.stop(promptModule);
 	mock.stop(configSetterModule);

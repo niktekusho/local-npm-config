@@ -1,13 +1,15 @@
 const prompt = require('./prompt');
 const questions = require('./questions');
 const npmConfigSet = require('./npm.config.setter');
-const transformConfig = require('./config.transformer');
+const transformConfig = require('./utils/config.transformer');
 const {exportConfig, validate} = require('./io');
 
 async function main(logger, options) {
 	options = {
 		...options
 	};
+
+	logger.debug(options);
 
 	const {dryrun, exportConfig: exportConfigOpt, verbose} = options;
 
@@ -17,6 +19,10 @@ async function main(logger, options) {
 
 	if (dryrun) {
 		logger.info('Dryrun mode enabled');
+	}
+
+	if (exportConfigOpt) {
+		logger.info('Configuration export enabled');
 	}
 
 	const answers = await prompt(questions);
@@ -35,7 +41,7 @@ async function main(logger, options) {
 
 	// Add the export promise dinamically
 	if (exportConfigOpt) {
-		logger.debug('Exporting config...');
+		logger.debug(`Exporting config: ${filteredConfig}`);
 		if (validate(filteredConfig)) {
 			commandsToRun.push(exportConfig(filteredConfig));
 		} else {
