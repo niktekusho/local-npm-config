@@ -1,6 +1,6 @@
 import test from 'ava';
 
-const loggerFactory = require('../src/logger');
+const loggerFactory = require('../../src/utils/logger');
 
 // Not testing here that the logger actually writes on stdout/stderr since that should be taken care by signale
 test('logger should have required functions to log stuff', t => {

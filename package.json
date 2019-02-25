@@ -5,6 +5,7 @@
     "main": "index.js",
     "scripts": {
         "coverage": "nyc --all --reporter lcov --reporter text ava",
+        "localLaunch": "node src/cli.js",
         "release": "np",
         "prepublishOnly": "yarpm test",
         "test": "xo && ava"
@@ -19,6 +20,7 @@
         "yarpm": "^0.2.1"
     },
     "dependencies": {
+        "ajv": "^6.9.1",
         "execa": "^1.0.0",
         "flat": "^4.1.0",
         "fuse.js": "^3.3.0",
