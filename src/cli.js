@@ -12,13 +12,16 @@ Usage:
 $ local-npm-config
 
 Options:
-  --dryrun,          List which commands will be launched instead of running them.
+  --dryrun,                 List which commands will be launched instead of running them.
    -d
 
-  --export-config,   Export your configuration into a json file in your current working directory.
+  --export-config,          Export your configuration into a json file in your current working directory.
    -e
 
-  --verbose          Display debug info.
+  --import-config <path>,   Apply the npm configuration from a config file (local or remote).
+   -i
+
+  --verbose                 Display debug info.
 
 `, {
 	flags: {
@@ -31,6 +34,10 @@ Options:
 			type: 'boolean',
 			default: false,
 			alias: 'e'
+		},
+		importConfig: {
+			type: 'string',
+			alias: 'i'
 		},
 		verbose: {
 			type: 'boolean',

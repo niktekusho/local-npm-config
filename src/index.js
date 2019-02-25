@@ -5,21 +5,36 @@ const transformConfig = require('./utils/config.transformer');
 const minimize = require('./utils/object.minimizer');
 const {
 	exportConfig,
+	importConfig,
 	validate
 } = require('./io');
 
 async function main(logger, options) {
-	options = {
+	const opts = {
+		dryrun: false,
+		exportConfig: false,
+		importConfig: false,
+		verbose: false,
 		...options
 	};
 
-	logger.debug(options);
+	logger.debug(opts);
 
 	const {
 		dryrun,
 		exportConfig: exportConfigOpt,
+		importConfig: importConfigOpt,
 		verbose
-	} = options;
+	} = opts;
+
+	// If both import and export are selected the user might be:
+	// a) trolling (most probably XD)
+	// b) drunk...
+	// It's better to fail fast now.
+	if (importConfigOpt && exportConfigOpt) {
+		logger.error('You selected both import and export options. I\'m afraid but you will have to choose one!');
+		return;
+	}
 
 	if (verbose) {
 		logger.info('Verbose mode enabled');
@@ -33,27 +48,33 @@ async function main(logger, options) {
 		logger.info('Configuration export enabled');
 	}
 
-	const answers = await prompt(questions);
-	logger.debug(answers);
+	if (importConfigOpt) {
+		logger.info('Applying local npm configuration from file');
+	}
 
-	const minimizedAnswers = minimize(answers);
-	logger.debug(minimizedAnswers);
+	// Fetch config either from file or from a prompt
+	const config = importConfigOpt ? await importConfig(importConfigOpt, logger, dryrun) : await prompt(questions);
+
+	logger.debug(config);
+
+	const minimizedConfig = minimize(config);
+	logger.debug(minimizedConfig);
 
 	const commandsToRun = [];
 
 	// Add the export promise dinamically
 	if (exportConfigOpt) {
-		logger.debug(`Exporting config: ${JSON.stringify(minimizedAnswers)}`);
-		const result = validate(minimizedAnswers);
+		logger.debug(`Exporting config: ${JSON.stringify(minimizedConfig)}`);
+		const result = validate(minimizedConfig);
 		if (result.isValid) {
-			commandsToRun.push(exportConfig(minimizedAnswers, logger, dryrun));
+			commandsToRun.push(exportConfig(minimizedConfig, logger, dryrun));
 		} else {
 			// Should not happen since we know what we are exporting!
 			logger.error('Configuration does not match expected schema.');
 			logger.debug(result.errors);
 		}
 	} else {
-		const filteredConfig = transformConfig(answers);
+		const filteredConfig = transformConfig(config);
 		logger.debug(filteredConfig);
 
 		const initConfig = filteredConfig.map(config => ({
