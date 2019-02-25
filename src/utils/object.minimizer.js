@@ -1,15 +1,15 @@
+// TODO: for now use a recursive solution
 function minimize(object) {
-	debugger;
 	const entries = [...Object.entries(object)];
 	const minimized = {};
 
 	while (entries.length > 0) {
 		const [key, value] = entries.shift();
-		if (typeof value === 'object') {
-			minimized[key] = {};
-			entries.push(...Object.entries(value));
-		} else if (value) {
+		if (value) {
 			minimized[key] = value;
+			if (typeof value === 'object' && Object.keys(value).length > 0) {
+				minimized[key] = minimize(object[key]);
+			}
 		}
 	}
 

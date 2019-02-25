@@ -8,6 +8,21 @@ const ajv = new Ajv({
 
 const rawValidate = ajv.compile(jsonSchema);
 
+class ValidationResult {
+	constructor(isValid, errors) {
+		this._isValid = isValid;
+		this._errors = errors;
+	}
+
+	get isValid() {
+		return this._isValid;
+	}
+
+	get errors() {
+		return this._errors;
+	}
+}
+
 function wrappedValidate(arg) {
 	let toValidate = arg || {};
 	if (typeof arg === 'string') {
@@ -18,7 +33,8 @@ function wrappedValidate(arg) {
 		}
 	}
 
-	return rawValidate(toValidate);
+	const isValid = rawValidate(toValidate);
+	return new ValidationResult(isValid, rawValidate.errors);
 }
 
 module.exports = wrappedValidate;

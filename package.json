@@ -5,6 +5,7 @@
     "main": "index.js",
     "scripts": {
         "coverage": "nyc --all --reporter lcov --reporter text ava",
+        "localLaunch": "node src/cli.js",
         "release": "np",
         "prepublishOnly": "yarpm test",
         "test": "xo && ava"
