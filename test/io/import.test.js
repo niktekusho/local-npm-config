@@ -6,20 +6,7 @@ const {writeFileSync, unlinkSync} = require('fs');
 const getPort = require('get-port');
 const tempy = require('tempy');
 
-class Log {
-	constructor() {
-		this.ops = [];
-	}
-
-	debug(msg) {
-		this.ops.push({type: 'debug', msg});
-	}
-
-	info(msg) {
-		this.ops.push({type: 'info', msg});
-	}
-}
-
+const {Log} = require('../_utils');
 const importFn = require('../../src/io/import');
 
 test.before(async t => {
@@ -130,7 +117,7 @@ test('passing a dryRun option should write the file content and target path in c
 	t.false(res === undefined || res === null);
 
 	// We should have 2 log.infos
-	t.is(logger.ops.filter(op => op.type === 'info').length, 2);
+	t.is(logger.infos.length, 2);
 
 	// Teardown
 	unlinkSync(tempFile);
