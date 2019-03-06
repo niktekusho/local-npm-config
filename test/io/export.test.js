@@ -2,22 +2,7 @@ import test from 'ava';
 
 const mock = require('mock-require');
 
-class FSOperation {
-	constructor(path, data) {
-		this.path = path;
-		this.data = data;
-	}
-}
-
-class Log {
-	constructor() {
-		this.ops = [];
-	}
-
-	info(msg) {
-		this.ops.push(msg);
-	}
-}
+const {FSOperation, Log} = require('../_utils');
 
 mock('fs', {
 	writeFile(path, data, opts, cb) {
@@ -48,9 +33,9 @@ test('passing a dryRun option should write the file content and target path in c
 	const res = await exporter('{"test":"foo"}', logger, true);
 	t.is(res, undefined);
 	// 2 log operations
-	t.is(logger.ops.length, 2);
+	t.is(logger.logs.length, 2);
 	// 1st: config object is printed
-	t.regex(logger.ops[0], /.*\{"test":"foo"\}$/);
+	t.regex(logger.logs[0].args[0], /.*\{"test":"foo"\}$/);
 	// 2nd: config export path is printed
-	t.regex(logger.ops[1], /^.*local-npm-config\.json$/);
+	t.regex(logger.logs[1].args[0], /^.*local-npm-config\.json$/);
 });

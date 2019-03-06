@@ -60,14 +60,12 @@ async function main(logger, options) {
 	const minimizedConfig = minimize(config);
 	logger.debug(minimizedConfig);
 
-	const commandsToRun = [];
-
 	// Add the export promise dinamically
 	if (exportConfigOpt) {
 		logger.debug(`Exporting config: ${JSON.stringify(minimizedConfig)}`);
 		const result = validate(minimizedConfig);
 		if (result.isValid) {
-			commandsToRun.push(exportConfig(minimizedConfig, logger, dryrun));
+			await exportConfig(minimizedConfig, logger, dryrun);
 		} else {
 			// Should not happen since we know what we are exporting!
 			logger.error('Configuration does not match expected schema.');
@@ -83,13 +81,10 @@ async function main(logger, options) {
 		}));
 		logger.debug(initConfig);
 
-		commandsToRun.push(initConfig.map(({
-			config,
-			value
-		}) => npmConfigSet(config, value, logger, dryrun)));
+		for (const {config, value} of initConfig) {
+			npmConfigSet(config, value, logger, dryrun);
+		}
 	}
-
-	await Promise.all(commandsToRun);
 }
 
 module.exports = main;
