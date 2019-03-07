@@ -1,6 +1,10 @@
 # local-npm-config (CLI)
 
+[![License](https://img.shields.io/github/license/niktekusho/local-npm-config.svg?style=flat)](./LICENSE)
+[![](https://img.shields.io/npm/v/local-npm-config.svg)](https://www.npmjs.com/package/local-npm-config)
 [![Build Status](https://travis-ci.org/niktekusho/local-npm-config.svg?branch=master)](https://travis-ci.org/niktekusho/local-npm-config)
+[![](https://img.shields.io/node/v/local-npm-config.svg)](https://www.npmjs.com/package/local-npm-config)
+[![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
 
 Do you work across multiple machines on JavaScript projects? If yes is your answer, then you might want to answer the question:
 
