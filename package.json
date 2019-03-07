@@ -1,8 +1,11 @@
 {
     "name": "local-npm-config",
-    "version": "0.1.0",
+    "version": "0.1.0-0",
     "description": "Manage your local npm configuration across multiple machines easily!",
-    "main": "index.js",
+    "bin": {
+        "local-npm-config": "src/cli.js",
+        "localnpm": "src/cli.js"
+    },
     "scripts": {
         "coverage": "nyc --all --reporter lcov --reporter text ava",
         "localLaunch": "node src/cli.js",
