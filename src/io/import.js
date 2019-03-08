@@ -12,28 +12,28 @@ async function importFn(path, logger, dryRun) {
 		throw new Error('Path should be specified!');
 	}
 
-	logger.debug(`Import: ${path}`);
+	logger.debug(`importFn: ${path}`);
 
 	// Very naive way... (http and https)
 	if (path.startsWith('http')) {
-		logger.debug('Import from remote location');
+		logger.debug('importFn: Import from remote location');
 		// Directly go with the importRemote
 		return importRemote(path, logger, dryRun);
 	}
 
 	// Local first when the path is dubious
 	try {
-		logger.debug('Local first when in doubt!');
+		logger.debug('importFn: Local first when in doubt!');
 		const local = await importLocal(path, logger, dryRun);
 		return local;
 	} catch (error) {
-		logger.debug(`Error caught: ${error.message}`);
+		logger.debug(`importFn: Error caught: ${error.message}`);
 		// Might be http or https: by default download will append https via prepend-http
 		try {
 			const remoteHttp = await importRemote(path, logger, dryRun);
 			return remoteHttp;
 		} catch (remoteError) {
-			logger.debug(remoteError);
+			logger.debug(`importFn: ${remoteError}`);
 			// Manually prepend http in case https failed
 			return importRemote(`http://${path}`, logger, dryRun);
 		}
@@ -46,14 +46,12 @@ async function importRemote(path, logger, dryRun) {
 	}
 
 	const content = await download(path);
-	logger.debug(content);
+	logger.debug(`importRemote: ${content.toString('utf8')}`);
 
 	return parseContent(content, logger, dryRun);
 }
 
 function parseContent(fileContent, logger, dryRun) {
-	logger.debug(fileContent);
-
 	let parsedJSON = {};
 	try {
 		parsedJSON = JSON.parse(fileContent);
@@ -70,7 +68,7 @@ function parseContent(fileContent, logger, dryRun) {
 
 async function importLocal(path, logger, dryRun) {
 	const toFile = prependCwd(path);
-	logger.debug(`${path} -> ${toFile}`);
+	logger.debug(`importLocal: ${path} -> ${toFile}`);
 
 	if (basename(toFile).endsWith('.json')) {
 		if (dryRun) {

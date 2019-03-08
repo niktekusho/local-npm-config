@@ -18,7 +18,7 @@ async function main(logger, options) {
 		...options
 	};
 
-	logger.debug(opts);
+	logger.debug(`main: ${opts}`);
 
 	const {
 		dryrun,
@@ -55,31 +55,31 @@ async function main(logger, options) {
 	// Fetch config either from file or from a prompt
 	const config = importConfigOpt ? await importConfig(importConfigOpt, logger, dryrun) : await prompt(questions);
 
-	logger.debug(config);
+	logger.debug(`main: ${config}`);
 
 	const minimizedConfig = minimize(config);
-	logger.debug(minimizedConfig);
+	logger.debug(`main: ${minimizedConfig}`);
 
 	// Add the export promise dinamically
 	if (exportConfigOpt) {
-		logger.debug(`Exporting config: ${JSON.stringify(minimizedConfig)}`);
+		logger.debug(`main: Exporting config: ${JSON.stringify(minimizedConfig)}`);
 		const result = validate(minimizedConfig);
 		if (result.isValid) {
 			await exportConfig(minimizedConfig, logger, dryrun);
 		} else {
 			// Should not happen since we know what we are exporting!
 			logger.error('Configuration does not match expected schema.');
-			logger.debug(result.errors);
+			logger.debug(`main: ${result.errors}`);
 		}
 	} else {
 		const filteredConfig = transformConfig(config);
-		logger.debug(filteredConfig);
+		logger.debug(`main: ${filteredConfig}`);
 
 		const initConfig = filteredConfig.map(config => ({
 			...config,
 			config: `init.${config.config}`
 		}));
-		logger.debug(initConfig);
+		logger.debug(`main: ${initConfig}`);
 
 		for (const {config, value} of initConfig) {
 			npmConfigSet(config, value, logger, dryrun);
