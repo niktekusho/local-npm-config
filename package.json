@@ -42,7 +42,8 @@
         "node": ">=8"
     },
     "files": [
-        "src/**/*.js"
+        "src/**/*.js",
+        "src/io/config.schema.json"
     ],
     "keywords": [
         "npm",
