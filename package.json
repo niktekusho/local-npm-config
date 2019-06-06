@@ -1,6 +1,6 @@
 {
     "name": "local-npm-config",
-    "version": "0.1.0-1",
+    "version": "0.1.0",
     "description": "Manage your local npm configuration across multiple machines easily!",
     "bin": {
         "local-npm-config": "src/cli.js",
