@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/github/license/niktekusho/local-npm-config.svg?style=flat)](./LICENSE)
 [![](https://img.shields.io/npm/v/local-npm-config.svg)](https://www.npmjs.com/package/local-npm-config)
-[![Build Status](https://travis-ci.org/niktekusho/local-npm-config.svg?branch=master)](https://travis-ci.org/niktekusho/local-npm-config)
+[![](https://github.com/niktekusho/local-npm-config/workflows/Build%20Status/badge.svg)](https://github.com/niktekusho/local-npm-config/actions)
 [![](https://img.shields.io/node/v/local-npm-config.svg)](https://www.npmjs.com/package/local-npm-config)
 [![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
 
