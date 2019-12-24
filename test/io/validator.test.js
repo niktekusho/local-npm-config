@@ -9,14 +9,14 @@ test('should return true with a valid object', t => {
 	const example = new ConfigExample('test');
 	const result = validate(example);
 	t.true(result.isValid);
-	t.deepEqual(result.errors, null);
+	t.is(result.errors, null);
 });
 
 test('if argument is a string it should parse it to a JSON object', t => {
 	const example = new ConfigExample('test');
 	const result = validate(JSON.stringify(example));
 	t.true(result.isValid);
-	t.deepEqual(result.errors, null);
+	t.is(result.errors, null);
 });
 
 test('if argument is a string but is not parseable to a JSON object it should throw', t => {

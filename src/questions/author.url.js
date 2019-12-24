@@ -5,7 +5,7 @@ function validateUrl(url) {
 		// eslint-disable-next-line no-new
 		new URL(url);
 		return true;
-	} catch (error) {
+	} catch (_) {
 		return `${url} is not a valid Url.`;
 	}
 }
