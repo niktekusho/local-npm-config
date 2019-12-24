@@ -29,7 +29,7 @@ function wrappedValidate(arg) {
 		try {
 			toValidate = JSON.parse(arg);
 		} catch (error) {
-			throw new TypeError('Could not parse specified string into a JSON object');
+			throw new TypeError('Could not parse specified string into a JSON object', error);
 		}
 	}
 

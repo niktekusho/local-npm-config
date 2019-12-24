@@ -56,7 +56,7 @@ function parseContent(fileContent, logger, dryRun) {
 	try {
 		parsedJSON = JSON.parse(fileContent);
 	} catch (error) {
-		throw new Error(`Could not parse content: ${fileContent}`);
+		throw new Error(`Could not parse content: ${fileContent}`, error);
 	}
 
 	if (dryRun) {
