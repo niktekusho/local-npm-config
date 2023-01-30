@@ -81,7 +81,6 @@ To contribute to this project, you should have the following software installed 
 
 -  `git`: [GitHub has a cool guide to install everything you need.](https://help.github.com/articles/set-up-git/)
 -  `node`: [The official site contains everything you need to know. This project requires at least Node version 8.](https://nodejs.org/en/)
--  `yarn`: [Yarn provides a faster development experience compared to oldish `npm` versions.](https://yarnpkg.com/en/docs/install)
 -  `VS Code`: [Visual Studio Code is the recommended text editor/IDE for this project.](https://code.visualstudio.com/)
 
 You should also be somewhat proficient using command line interfaces. If you use Visual Studio Code, you get a decent terminal basically for free.
@@ -108,10 +107,10 @@ $ git remote add upstream https://github.com/niktekusho/local-npm-config
 Now you need to install the dependencies of this project:
 
 ```sh
-$ yarn install
+$ npm install
 ```
 
-Whether you'll write code or documentation, it's a good habit to create an independent line of development for each specific "topic" you are working on. 
+Whether you'll write code or documentation, it's a good habit to create an independent line of development for each specific "topic" you are working on.
 These lines are called *branches*. To create a new branch, you can run the following command:
 
 ```sh
@@ -127,7 +126,7 @@ To save your changes, you need to follow these steps:
 4.  push them to your online fork `git push`.
 
 If you've changed the project's code, you should ensure that what you've changed didn't break existing functionalities.
-The `yarn test` command ensures your contribution works and adheres to this project code style ("lint").
+The `npm test` command ensures your contribution works and adheres to this project code style ("lint").
 
 ### Submitting a pull request
 
@@ -141,7 +140,16 @@ The `yarn test` command ensures your contribution works and adheres to this proj
 - Write a convincing description of why we should land your pull request. It's your job to convince us. Answer "why" it's needed and provide use-cases.
 - You might be asked to do changes to your pull request. There's never a need to open another pull request. [Just update the existing one.](https://github.com/RichardLitt/knowledge/blob/master/github/amending-a-commit-guide.md)
 
+## Test the CLI locally
+
+Just run `npm install && npm link` and you'll have access to the package on your local machine.
+
+Note: this will link *your* **local copy** of **local-npm-config** in your global npm packages repository and will override the package installed from npm's public package registry.
+It's advisable to run `npm unlink` after you're done with these manual tests.
+
+Then you can use the same commands described in the [main README](../README.md) (such as `local-npm-config -i <file|url>`).
+
 ## Release
 
 The release process is managed using [np](https://github.com/sindresorhus/np).
-When a release is ready, the command `yarn release` initiates the release process, ensuring that everything is properly checked.
+When a release is ready, the command `npm run release` initiates the release process, ensuring that everything is properly checked.
