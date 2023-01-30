@@ -9,7 +9,7 @@ module.exports = (config, value, logger, dryrun) => {
 
 	logger.info(`Applying ${config}...`);
 
-	const {stdout, stderr} = execa.sync('npm', ['set', config, value]);
+	const {stdout, stderr} = execa.sync('npm', ['set', `${config}=${value}`, '--location=user']);
 	// Log both of them in the verbose mode
 	logger.debug(`stdout: ${stdout}, stderr: ${stderr}`);
 };
