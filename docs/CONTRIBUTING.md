@@ -145,7 +145,7 @@ The `npm test` command ensures your contribution works and adheres to this proje
 Just run `npm install && npm link` and you'll have access to the package on your local machine.
 
 Note: this will link *your* **local copy** of **local-npm-config** in your global npm packages repository and will override the package installed from npm's public package registry.
-It's advisable to run `npm unlink` after you're done with these manual tests.
+It's advisable to run `npm unlink .` after you're done with these manual tests.
 
 Then you can use the same commands described in the [main README](../README.md) (such as `local-npm-config -i <file|url>`).
 
