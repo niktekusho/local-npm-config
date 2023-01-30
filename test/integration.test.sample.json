@@ -1,0 +1,9 @@
+{
+  "author": {
+    "name": "integration tester",
+    "email": "integration-tester@example.org",
+    "url": "https://integration-tester.org"
+  },
+  "license": "MIT",
+  "version": "1.0.0"
+}
