@@ -28,7 +28,7 @@ async function main(logger, options) {
 	} = opts;
 
 	// If both import and export are selected the user might be:
-	// a) trolling (most probably XD)
+	// a) trolling (most likely XD)
 	// b) drunk...
 	// It's better to fail fast now.
 	if (importConfigOpt && exportConfigOpt) {
@@ -77,7 +77,7 @@ async function main(logger, options) {
 
 		const initConfig = filteredConfig.map(config => ({
 			...config,
-			config: `init.${config.config}`
+			config: `init-${config.config}`
 		}));
 		logger.debug(`main: ${initConfig}`);
 

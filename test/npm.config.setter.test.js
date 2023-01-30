@@ -41,7 +41,7 @@ test('setter should call execa with "npm set config value"', t => {
 	const cmd = execaMock.first;
 	t.truthy(cmd);
 	t.is(cmd.args[0], 'npm');
-	t.deepEqual(cmd.args[1], ['set', 'testConfig', 'testValue']);
+	t.deepEqual(cmd.args[1], ['set', 'testConfig=testValue', '--location=user']);
 });
 
 test('setter should not call execa when dryrun option is true', t => {
