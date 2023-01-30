@@ -1,5 +1,11 @@
 const {URL} = require('url');
 
+/**
+ * Simple URL validation function.
+ *
+ * @param {string} url String to validate into an URL.
+ * @returns {true|string} `true` if the supplied string is a valid URL or an error message otherwise.
+ */
 function validateUrl(url) {
 	try {
 		// eslint-disable-next-line no-new
