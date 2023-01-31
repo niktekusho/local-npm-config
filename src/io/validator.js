@@ -1,10 +1,12 @@
 const Ajv = require('ajv');
+const addFormats = require('ajv-formats');
 
 const jsonSchema = require('./config.schema.json');
 
 const ajv = new Ajv({
 	allErrors: true
 });
+addFormats(ajv);
 
 const rawValidate = ajv.compile(jsonSchema);
 
