@@ -1,15 +1,17 @@
 const execa = require('execa');
 
 module.exports = (config, value, logger, dryrun) => {
-	logger.debug(`About to run: npm set ${config} ${value}`);
+	logger.info(`Applying ${config}...`);
+
 	if (dryrun) {
-		logger.info(`npm set ${config} ${value}`);
+		const command = `npm set ${config}=${value} --location=user`;
+		logger.info(command);
 		return;
 	}
 
-	logger.info(`Applying ${config}...`);
+	const {stdout, stderr, command} = execa.sync('npm', ['set', `${config}=${value}`, '--location=user']);
 
-	const {stdout, stderr} = execa.sync('npm', ['set', `${config}=${value}`, '--location=user']);
+	logger.debug(`Command executed: ${command}`);
 	// Log both of them in the verbose mode
 	logger.debug(`stdout: ${stdout}, stderr: ${stderr}`);
 };
