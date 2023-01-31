@@ -39,7 +39,7 @@
         "spdx-license-list": "^6.1.0"
     },
     "engines": {
-        "node": ">=8"
+        "node": ">=14"
     },
     "files": [
         "src/**/*.js",

@@ -1,5 +1,3 @@
-const {URL} = require('url');
-
 /**
  * Simple URL validation function.
  *
