@@ -1,11 +1,8 @@
-const {readFile} = require('fs');
+const {readFile, access} = require('fs/promises');
 const {basename} = require('path');
-const {promisify} = require('util');
 
 const download = require('download');
 const prependCwd = require('prepend-cwd');
-
-const asyncReadFile = promisify(readFile);
 
 /**
  * @typedef { import("../types").Logger } Logger
@@ -16,10 +13,9 @@ const asyncReadFile = promisify(readFile);
  *
  * @param {string} path Path to the configuration backup.
  * @param {Logger} logger Logger instance.
- * @param {bool} dryRun `true` if the user only wants to print the expected operations and not execute them.
  * @returns {object} Configuration to import.
  */
-async function importFn(path, logger, dryRun) {
+async function importFn(path, logger) {
 	if (path === null || path === undefined) {
 		throw new Error('Path should be specified!');
 	}
@@ -30,24 +26,28 @@ async function importFn(path, logger, dryRun) {
 	if (path.startsWith('http')) {
 		logger.debug('importFn: Import from remote location');
 		// Directly go with the importRemote
-		return importRemote(path, logger, dryRun);
+		return importRemote(path, logger);
 	}
 
 	// Local first when the path is dubious
 	try {
 		logger.debug('importFn: Local first when in doubt!');
-		const local = await importLocal(path, logger, dryRun);
-		return local;
+		return await importLocal(path, logger);
 	} catch (error) {
-		logger.debug(`importFn: Error caught: ${error.message}`);
-		// Might be http or https: by default download will append https via prepend-http
-		try {
-			const remoteHttp = await importRemote(path, logger, dryRun);
-			return remoteHttp;
-		} catch (remoteError) {
-			logger.debug(`importFn: ${remoteError}`);
-			// Manually prepend http in case https failed
-			return importRemote(`http://${path}`, logger, dryRun);
+		// If internal error, rethrow
+		if (error.name === 'NonJsonFileError') {
+			throw error;
+		} else {
+			logger.debug(`importFn: Error caught: ${error.message}`);
+			// Might be http or https: by default download will append https via prepend-http
+			try {
+				const remoteHttp = await importRemote(path, logger);
+				return remoteHttp;
+			} catch (remoteError) {
+				logger.debug(`importFn: ${remoteError}`);
+				// Manually prepend http in case https failed
+				return importRemote(`http://${path}`, logger);
+			}
 		}
 	}
 }
@@ -57,13 +57,10 @@ async function importFn(path, logger, dryRun) {
  *
  * @param {string} path Path to the configuration backup.
  * @param {Logger} logger Logger instance.
- * @param {bool} dryRun `true` if the user only wants to print the expected operations and not execute them.
  * @returns {object} Configuration to import.
  */
-async function importRemote(path, logger, dryRun) {
-	if (dryRun) {
-		logger.info(`Downloading file from: ${path}`);
-	}
+async function importRemote(path, logger) {
+	logger.info(`Downloading file from: ${path}`);
 
 	const content = await download(path);
 	logger.debug(`importRemote: ${content.toString('utf8')}`);
@@ -91,29 +88,38 @@ function parseContent(fileContent, logger) {
 	return parsedJSON;
 }
 
+class NonJsonFileError extends Error {
+	constructor(msg) {
+		super(msg);
+		Error.captureStackTrace(this, NonJsonFileError);
+		this.name = 'NonJsonFileError';
+	}
+}
+
 /**
  * Imports the npm configuration backup from a local file.
  *
  * @param {string} path Path to the configuration backup.
  * @param {Logger} logger Logger instance.
- * @param {bool} dryRun `true` if the user only wants to print the expected operations and not execute them.
  * @returns {object} Configuration to import.
  */
-async function importLocal(path, logger, dryRun) {
+async function importLocal(path, logger) {
 	const toFile = prependCwd(path);
 	logger.debug(`importLocal: ${path} -> ${toFile}`);
 
-	if (basename(toFile).endsWith('.json')) {
-		if (dryRun) {
-			logger.info(`Reading content from: ${toFile}`);
-		}
+	// Check if file exists and user has appropriate permissions.
+	// It's fine to rethrow the error.
+	await access(toFile);
 
-		const fileContent = await asyncReadFile(toFile, {encoding: 'utf8'});
+	if (basename(toFile).endsWith('.json')) {
+		logger.info(`Reading content from: ${toFile}`);
+
+		const fileContent = await readFile(toFile, {encoding: 'utf8'});
 
 		return parseContent(fileContent, logger);
 	}
 
-	throw new TypeError(`File with path ${toFile} is not a JSON file.`);
+	throw new NonJsonFileError(`File with path ${toFile} is not a JSON file.`);
 }
 
 module.exports = importFn;

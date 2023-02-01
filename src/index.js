@@ -5,8 +5,7 @@ const transformConfig = require('./utils/config.transformer');
 const minimize = require('./utils/object.minimizer');
 const {
 	exportConfig,
-	importConfig,
-	validate
+	importConfig
 } = require('./io');
 
 async function main(logger, options) {
@@ -63,14 +62,7 @@ async function main(logger, options) {
 	// Add the export promise dinamically
 	if (exportConfigOpt) {
 		logger.debug(`main: Exporting config: ${JSON.stringify(minimizedConfig)}`);
-		const result = validate(minimizedConfig);
-		if (result.isValid) {
-			await exportConfig(minimizedConfig, logger, dryrun);
-		} else {
-			// Should not happen since we know what we are exporting!
-			logger.error('Configuration does not match expected schema.');
-			logger.debug(`main: ${result.errors}`);
-		}
+		await exportConfig(minimizedConfig, logger, dryrun);
 	} else {
 		const filteredConfig = transformConfig(config);
 		logger.debug(`main: ${filteredConfig}`);

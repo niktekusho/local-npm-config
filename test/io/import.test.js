@@ -1,5 +1,4 @@
-import test from 'ava';
-
+const {test, before, teardown} = require('tap');
 const http = require('http');
 const {writeFileSync, unlinkSync} = require('fs');
 
@@ -9,7 +8,10 @@ const tempy = require('tempy');
 const {Log} = require('../_utils');
 const importFn = require('../../src/io/import');
 
-test.before(async t => {
+let server = null;
+let port = null;
+
+before(async () => {
 	const fixedResponseObj = {
 		author: {
 			name: 'test',
@@ -19,14 +21,15 @@ test.before(async t => {
 		version: '0.1.0'
 	};
 	const fixedResponseString = JSON.stringify(fixedResponseObj);
-	const server = await setupServer(fixedResponseString);
-	t.context.server = server;
-	t.context.port = server.address().port;
+	server = await setupServer(fixedResponseString);
+	port = server.address().port;
 });
 
-test.after.always('cleanup', t => {
-	if (t.context.server) {
-		t.context.server.close();
+teardown(() => {
+	// eslint-disable-next-line no-eq-null, eqeqeq
+	if (server != null) {
+		server.close();
+		server = null;
 	}
 });
 
@@ -46,21 +49,11 @@ async function setupServer(fixedResponse) {
 }
 
 test('should throw if the path argument is null', async t => {
-	try {
-		await importFn(null, null, false);
-		t.fail('Null path should throw!');
-	} catch (error) {
-		t.is(error.message, 'Path should be specified!');
-	}
+	await t.rejects(() => importFn(null, null), new Error('Path should be specified!'));
 });
 
 test('should throw if the path argument is undefined', async t => {
-	try {
-		await importFn(undefined, null, false);
-		t.fail('Undefined path should throw!');
-	} catch (error) {
-		t.is(error.message, 'Path should be specified!');
-	}
+	await t.rejects(() => importFn(undefined, null), new Error('Path should be specified!'));
 });
 
 test('should read the file specified in the argument', async t => {
@@ -70,22 +63,22 @@ test('should read the file specified in the argument', async t => {
 	const logger = new Log();
 	writeFileSync(tempFile, tempConfig);
 
-	const config = await importFn(tempFile, logger, false);
-	t.true(typeof config === 'object');
-	t.deepEqual(config, {test: 'foo'});
+	const config = await importFn(tempFile, logger);
+	t.ok(typeof config === 'object');
+	t.strictSame(config, {test: 'foo'});
 
 	// Teardown
 	unlinkSync(tempFile);
 });
 
-test('passing a path to a non JSON file should throw', async t => {
+test('passing a path to a file without the json extension should throw', async t => {
 	// Setup
 	const tempFile = tempy.file();
 	const tempConfig = '{"test":"foo"}';
 	const logger = new Log();
 	writeFileSync(tempFile, tempConfig);
 
-	await t.throwsAsync(importFn(tempFile, logger, false));
+	await t.rejects(() => importFn(tempFile, logger), `File with path ${tempFile} is not a JSON file.`);
 
 	// Teardown
 	unlinkSync(tempFile);
@@ -98,26 +91,7 @@ test('passing a path to a .json file which is not parseable should throw', async
 	const logger = new Log();
 	writeFileSync(tempFile, tempConfig);
 
-	await t.throwsAsync(importFn(tempFile, logger, false));
-
-	// Teardown
-	unlinkSync(tempFile);
-});
-
-test('passing a dryRun option should write the file content and target path in console', async t => {
-	// Setup
-	const tempFile = tempy.file({extension: 'json'});
-	const tempConfig = '{"test":"foo"}';
-	const logger = new Log();
-	writeFileSync(tempFile, tempConfig);
-
-	const res = await importFn(tempFile, logger, true);
-
-	// Function should still read and return the file as an object
-	t.false(res === undefined || res === null);
-
-	// We should have 2 log.infos
-	t.is(logger.infos.length, 2);
+	await t.rejects(() => importFn(tempFile, logger), `File with path ${tempFile} is not a JSON file.`);
 
 	// Teardown
 	unlinkSync(tempFile);
@@ -125,37 +99,22 @@ test('passing a dryRun option should write the file content and target path in c
 
 test('passing an HTTP url as path argument should initiate download', async t => {
 	// Server is created in the before hook
-	const {port} = t.context;
 	const fakeUrl = `http://localhost:${port}/fake_data.json`;
 	const logger = new Log();
-	const res = await importFn(fakeUrl, logger, false);
-	t.log(res);
-	t.truthy(res);
-});
-
-test('passing an HTTP url as path argument should initiate download and return the object even when dryrun is true', async t => {
-	// Server is created in the before hook
-	const {port} = t.context;
-	const fakeUrl = `http://localhost:${port}/fake_data.json`;
-	const logger = new Log();
-	const res = await importFn(fakeUrl, logger, true);
-	t.log(res);
-	t.truthy(res);
+	const res = await importFn(fakeUrl, logger);
+	t.ok(res);
 });
 
 test('passing a url without protocol as path argument should first go through the local path and then fall back to the remote one (http)', async t => {
-	const {port} = t.context;
 	const fakeUrl = `localhost:${port}/fake_data.json`;
 	const logger = new Log();
-	const res = await importFn(fakeUrl, logger, false);
-	t.log(res);
-	t.truthy(res);
+	const res = await importFn(fakeUrl, logger);
+	t.ok(res);
 });
 
 test('passing a url without protocol as path argument should first go through the local path and then fall back to the remote one (https)', async t => {
 	const apiUrl = 'randomuser.me/api/?results=1';
 	const logger = new Log();
-	const res = await importFn(apiUrl, logger, false);
-	t.log(res);
-	t.truthy(res);
+	const res = await importFn(apiUrl, logger);
+	t.ok(res);
 });

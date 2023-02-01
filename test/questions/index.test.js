@@ -1,8 +1,7 @@
-import test from 'ava';
-
+const {test} = require('tap');
 const questions = require('../../src/questions');
 
-test('questions should include all prompts', t => {
+test('questions should include all prompts', async t => {
 	/*
 	 * 1. Email
 	 * 2. Name
@@ -11,5 +10,5 @@ test('questions should include all prompts', t => {
 	 * 5. Version
 	 */
 	const promptsCount = 5;
-	t.is(questions.length, promptsCount);
+	t.equal(questions.length, promptsCount);
 });

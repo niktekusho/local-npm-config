@@ -1,5 +1,4 @@
-import test from 'ava';
-
+const {test} = require('tap');
 const mock = require('mock-require');
 
 class ExecaMock {
@@ -34,21 +33,21 @@ mock('execa', execaMock);
 const setter = require('../src/npm.config.setter');
 const {Log} = require('./_utils');
 
-test('setter should call execa with "npm set config value"', t => {
+test('setter should call execa with "npm set config value"', async t => {
 	const mockedLogger = new Log();
 	execaMock.clear();
 	setter('testConfig', 'testValue', mockedLogger);
 	const cmd = execaMock.first;
-	t.truthy(cmd);
-	t.is(cmd.args[0], 'npm');
-	t.deepEqual(cmd.args[1], ['set', 'testConfig=testValue', '--location=user']);
+	t.ok(cmd);
+	t.equal(cmd.args[0], 'npm');
+	t.strictSame(cmd.args[1], ['set', 'testConfig=testValue', '--location=user']);
 });
 
-test('setter should not call execa when dryrun option is true', t => {
+test('setter should not call execa when dryrun option is true', async t => {
 	const mockedLogger = new Log();
 	execaMock.clear();
 	setter('testConfig', 'testValue', mockedLogger, true);
 	const cmd = execaMock.first;
-	t.is(cmd, undefined);
-	t.true(mockedLogger.infos.length > 0);
+	t.equal(cmd, undefined);
+	t.ok(mockedLogger.infos.length > 0);
 });

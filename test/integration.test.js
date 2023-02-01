@@ -1,5 +1,4 @@
-import test from 'ava';
-
+const {test, before, teardown} = require('tap');
 const {spawnSync} = require('child_process');
 const {copyFileSync, readFileSync, rmSync} = require('fs');
 const {join, resolve} = require('path');
@@ -19,7 +18,7 @@ const rootProjectDirPath = resolve(__dirname, '..');
 let backedUpExistingNpmrc = false;
 
 // eslint-disable-next-line func-names
-test.before(function setup() {
+before(function setup() {
 	try {
 		// If backup creation fails, ignore silently
 		copyFileSync(npmRcPath, npmRcBackupPath);
@@ -39,7 +38,7 @@ test.before(function setup() {
 });
 
 // eslint-disable-next-line func-names
-test.after.always(function restoreBackup() {
+teardown(function restoreBackup() {
 	if (backedUpExistingNpmrc) {
 		console.log('Restoring .npmrc backup');
 		try {
@@ -51,10 +50,10 @@ test.after.always(function restoreBackup() {
 	}
 });
 
-test.serial('running CLI with the import function should create the appropriate .npmrc in the home dir', t => {
+test('running CLI with the import function should create the appropriate .npmrc in the home dir', async t => {
 	const script = join(rootProjectDirPath, 'src', 'cli.js');
 	const command = `node ${script} -i test/integration.test.sample.json --verbose`;
-	t.log(`Will launch the following command: ${command}`);
+	console.log(`Will launch the following command: ${command}`);
 
 	spawnSync('node',
 		[script, '-i', 'test/integration.test.sample.json', '--verbose'],
@@ -63,8 +62,8 @@ test.serial('running CLI with the import function should create the appropriate 
 	let npmRcFile = readFileSync(npmRcPath, {encoding: 'utf-8'});
 	// Fix for tests running on windows
 	npmRcFile = npmRcFile.replace(/\r\n/g, '\n');
-	t.log(npmRcFile);
-	t.is(npmRcFile, `init-author-name=integration tester
+	console.log(npmRcFile);
+	t.equal(npmRcFile, `init-author-name=integration tester
 init-author-email=integration-tester@example.org
 init-author-url=https://integration-tester.org/
 init-license=MIT

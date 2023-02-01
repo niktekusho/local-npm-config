@@ -1,5 +1,4 @@
-import test from 'ava';
-
+const {test} = require('tap');
 const mock = require('mock-require');
 
 mock('inquirer', {
@@ -15,6 +14,6 @@ test('prompt should be an async function', async t => {
 		name: 'test'
 	}];
 	const answers = await prompt(questions);
-	t.is(answers, questions);
+	t.equal(answers, questions);
 	mock.stop('inquirer');
 });

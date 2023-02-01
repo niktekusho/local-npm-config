@@ -1,8 +1,7 @@
-import test from 'ava';
-
+const {test} = require('tap');
 const minimize = require('../../src/utils/object.minimizer');
 
-test('object.minimizer should return the object without falsy values', t => {
+test('object.minimizer should return the object without falsy values', async t => {
 	const minimized = minimize({
 		author: {
 			name: 'test',
@@ -12,13 +11,12 @@ test('object.minimizer should return the object without falsy values', t => {
 		license: 'MIT',
 		version: '0.0.1'
 	});
-	t.deepEqual(minimized, {
+	t.strictSame(minimized, {
 		author: {name: 'test', email: 'test@t.t'}, license: 'MIT', version: '0.0.1'
 	});
 });
 
-test('minimize should return the minimum object', t => {
-	// Minimal
+test('minimize should return the minimum object', async t => {
 	const minimal = minimize({
 		author: {
 			name: 'test',
@@ -28,5 +26,5 @@ test('minimize should return the minimum object', t => {
 		license: '',
 		version: ''
 	});
-	t.deepEqual(minimal, {author: {name: 'test'}});
+	t.strictSame(minimal, {author: {name: 'test'}});
 });
