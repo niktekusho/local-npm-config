@@ -1,4 +1,5 @@
 const {test} = require('tap');
+const Configuration = require('../../src/configuration');
 const transformer = require('../../src/utils/config.transformer');
 
 const answers = {
@@ -13,8 +14,8 @@ const answers = {
 
 test('config.transformer should return an array of transformed config', async t => {
 	const transformed = transformer(answers);
-	t.strictSame(transformed[0], {config: 'author-name', value: 'test'});
-	t.strictSame(transformed[1], {config: 'author-email', value: 'test@t.t'});
-	t.strictSame(transformed[2], {config: 'license', value: 'MIT'});
-	t.strictSame(transformed[3], {config: 'version', value: '0.0.1'});
+	t.strictSame(transformed[0], Configuration.initConfig('author-name', 'test'));
+	t.strictSame(transformed[1], Configuration.initConfig('author-email', 'test@t.t'));
+	t.strictSame(transformed[2], Configuration.initConfig('license', 'MIT'));
+	t.strictSame(transformed[3], Configuration.initConfig('version', '0.0.1'));
 });

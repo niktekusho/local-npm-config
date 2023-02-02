@@ -26,10 +26,10 @@
         "yarpm": "^0.2.1"
     },
     "dependencies": {
+        "@npmcli/config": "^6.1.2",
         "ajv": "^8.12.0",
         "ajv-formats": "^2.1.1",
         "download": "^8.0.0",
-        "execa": "^4.0.0",
         "flat": "^5.0.0",
         "fuse.js": "^3.3.0",
         "inquirer": "^7.0.1",

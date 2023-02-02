@@ -67,15 +67,7 @@ async function main(logger, options) {
 		const filteredConfig = transformConfig(config);
 		logger.debug(`main: ${filteredConfig}`);
 
-		const initConfig = filteredConfig.map(config => ({
-			...config,
-			config: `init-${config.config}`
-		}));
-		logger.debug(`main: ${initConfig}`);
-
-		for (const {config, value} of initConfig) {
-			npmConfigSet(config, value, logger, dryrun);
-		}
+		await npmConfigSet(filteredConfig, logger, dryrun);
 	}
 }
 
