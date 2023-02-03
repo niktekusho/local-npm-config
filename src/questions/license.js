@@ -11,6 +11,20 @@ const choices = [{name: 'Leave unset...', value: ''}, ...licensesAsChoices];
  */
 
 /**
+ * @type {import("fuse.js").default.IFuseOptions<Licenses>}
+ */
+const fuseOpts = {
+	keys: ['name', 'value']
+};
+
+// Use fuse to "fuzzy search" for the correct choice
+// Fuse will run the search on both the name and the value properties of the licenses
+/**
+ * @type {import("fuse.js").default<Licenses>}
+ */
+const fuse = new Fuse(licensesAsChoices, fuseOpts);
+
+/**
  * Returns the appropriate licenses, filtered if the user supplied a filter.
  *
  * @param {string?} input Input license.
@@ -19,10 +33,8 @@ const choices = [{name: 'Leave unset...', value: ''}, ...licensesAsChoices];
 async function getLicenses(_, input) {
 	// Only filter if input is defined
 	if (input) {
-		// Use fuse to "fuzzy search" for the correct choice
-		// Fuse will run the search on both the name and the value properties of the licenses
-		const fuse = new Fuse(licensesAsChoices, {keys: ['name', 'value']});
-		return fuse.search(input);
+		const result = fuse.search(input);
+		return result.map(res => res.item);
 	}
 
 	return choices;
