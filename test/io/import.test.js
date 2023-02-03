@@ -2,7 +2,7 @@ const {test, before, teardown} = require('tap');
 const http = require('http');
 const {writeFileSync, unlinkSync} = require('fs');
 
-const getPort = require('get-port');
+const {getPort} = require('get-port-please');
 const tempy = require('tempy');
 
 const {Log} = require('../_utils');
