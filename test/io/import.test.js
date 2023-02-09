@@ -1,15 +1,29 @@
-const {test, before, teardown} = require('tap');
+const {writeFile, unlink} = require('fs/promises');
 const http = require('http');
-const {writeFileSync, unlinkSync} = require('fs');
+const {tmpdir} = require('os');
+const {join} = require('path');
 
+const {test, before, teardown} = require('tap');
 const {getPort} = require('get-port-please');
-const tempy = require('tempy');
 
 const {Log} = require('../_utils');
 const importFn = require('../../src/io/import');
 
+const tmpDir = tmpdir();
+
 let server = null;
 let port = null;
+
+/**
+ * Create a temporary file in the OS temporary dir (duh!).
+ * @param {string} fileName Name of the file.
+ * @param {string?} content Content of the file.
+ */
+async function createTempFile(fileName, content) {
+	const tmpFilePath = join(tmpDir, fileName);
+	await writeFile(tmpFilePath, content);
+	return tmpFilePath;
+}
 
 before(async () => {
 	const fixedResponseObj = {
@@ -58,43 +72,37 @@ test('should throw if the path argument is undefined', async t => {
 
 test('should read the file specified in the argument', async t => {
 	// Setup
-	const tempFile = tempy.file({extension: 'json'});
-	const tempConfig = '{"test":"foo"}';
+	const tempFile = await createTempFile('testfile.json', '{"test":"foo"}');
 	const logger = new Log();
-	writeFileSync(tempFile, tempConfig);
 
 	const config = await importFn(tempFile, logger);
 	t.ok(typeof config === 'object');
 	t.strictSame(config, {test: 'foo'});
 
 	// Teardown
-	unlinkSync(tempFile);
+	await unlink(tempFile);
 });
 
 test('passing a path to a file without the json extension should throw', async t => {
 	// Setup
-	const tempFile = tempy.file();
-	const tempConfig = '{"test":"foo"}';
+	const tempFile = await createTempFile('testfile-with-wrong.extension', '{"test":"foo"}');
 	const logger = new Log();
-	writeFileSync(tempFile, tempConfig);
 
 	await t.rejects(() => importFn(tempFile, logger), `File with path ${tempFile} is not a JSON file.`);
 
 	// Teardown
-	unlinkSync(tempFile);
+	await unlink(tempFile);
 });
 
 test('passing a path to a .json file which is not parseable should throw', async t => {
 	// Setup
-	const tempFile = tempy.file({extension: 'json'});
-	const tempConfig = '{"test"}';
+	const tempFile = await createTempFile('testfile.json', '{"test"}');
 	const logger = new Log();
-	writeFileSync(tempFile, tempConfig);
 
 	await t.rejects(() => importFn(tempFile, logger), `File with path ${tempFile} is not a JSON file.`);
 
 	// Teardown
-	unlinkSync(tempFile);
+	await unlink(tempFile);
 });
 
 test('passing an HTTP url as path argument should initiate download', async t => {
