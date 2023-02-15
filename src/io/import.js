@@ -11,28 +11,28 @@ const prependCwd = require('prepend-cwd');
 /**
  * Imports the npm configuration backup from a local file or a remote resource.
  *
- * @param {string} path Path to the configuration backup.
+ * @param {string} pathToConfig Path to the configuration backup.
  * @param {Logger} logger Logger instance.
  * @returns {object} Configuration to import.
  */
-async function importFn(path, logger) {
-	if (path === null || path === undefined) {
+async function importConfig(pathToConfig, logger) {
+	if (pathToConfig === null || pathToConfig === undefined) {
 		throw new Error('Path should be specified!');
 	}
 
-	logger.debug(`importFn: ${path}`);
+	logger.debug(`importFn: ${pathToConfig}`);
 
 	// Very naive way... (http and https)
-	if (path.startsWith('http')) {
+	if (pathToConfig.startsWith('http')) {
 		logger.debug('importFn: Import from remote location');
 		// Directly go with the importRemote
-		return importRemote(path, logger);
+		return importRemote(pathToConfig, logger);
 	}
 
 	// Local first when the path is dubious
 	try {
 		logger.debug('importFn: Local first when in doubt!');
-		return await importLocal(path, logger);
+		return await importLocal(pathToConfig, logger);
 	} catch (error) {
 		// If internal error, rethrow
 		if (error.name === 'NonJsonFileError') {
@@ -41,12 +41,12 @@ async function importFn(path, logger) {
 			logger.debug(`importFn: Error caught: ${error.message}`);
 			// Might be http or https: by default download will append https via prepend-http
 			try {
-				const remoteHttp = await importRemote(path, logger);
+				const remoteHttp = await importRemote(pathToConfig, logger);
 				return remoteHttp;
 			} catch (remoteError) {
 				logger.debug(`importFn: ${remoteError}`);
 				// Manually prepend http in case https failed
-				return importRemote(`http://${path}`, logger);
+				return importRemote(`http://${pathToConfig}`, logger);
 			}
 		}
 	}
@@ -122,4 +122,4 @@ async function importLocal(path, logger) {
 	throw new NonJsonFileError(`File with path ${toFile} is not a JSON file.`);
 }
 
-module.exports = importFn;
+module.exports = importConfig;

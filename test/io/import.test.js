@@ -7,7 +7,7 @@ const {test, before, teardown} = require('tap');
 const {getPort} = require('get-port-please');
 
 const {Log} = require('../_utils');
-const importFn = require('../../src/io/import');
+const importConfig = require('../../src/io/import');
 
 const tmpDir = tmpdir();
 
@@ -63,11 +63,11 @@ async function setupServer(fixedResponse) {
 }
 
 test('should throw if the path argument is null', async t => {
-	await t.rejects(() => importFn(null, null), new Error('Path should be specified!'));
+	await t.rejects(() => importConfig(null, null), new Error('Path should be specified!'));
 });
 
 test('should throw if the path argument is undefined', async t => {
-	await t.rejects(() => importFn(undefined, null), new Error('Path should be specified!'));
+	await t.rejects(() => importConfig(undefined, null), new Error('Path should be specified!'));
 });
 
 test('should read the file specified in the argument', async t => {
@@ -75,7 +75,7 @@ test('should read the file specified in the argument', async t => {
 	const tempFile = await createTempFile('testfile.json', '{"test":"foo"}');
 	const logger = new Log();
 
-	const config = await importFn(tempFile, logger);
+	const config = await importConfig(tempFile, logger);
 	t.ok(typeof config === 'object');
 	t.strictSame(config, {test: 'foo'});
 
@@ -88,7 +88,7 @@ test('passing a path to a file without the json extension should throw', async t
 	const tempFile = await createTempFile('testfile-with-wrong.extension', '{"test":"foo"}');
 	const logger = new Log();
 
-	await t.rejects(() => importFn(tempFile, logger), `File with path ${tempFile} is not a JSON file.`);
+	await t.rejects(() => importConfig(tempFile, logger), `File with path ${tempFile} is not a JSON file.`);
 
 	// Teardown
 	await unlink(tempFile);
@@ -99,7 +99,7 @@ test('passing a path to a .json file which is not parseable should throw', async
 	const tempFile = await createTempFile('testfile.json', '{"test"}');
 	const logger = new Log();
 
-	await t.rejects(() => importFn(tempFile, logger), `File with path ${tempFile} is not a JSON file.`);
+	await t.rejects(() => importConfig(tempFile, logger), `File with path ${tempFile} is not a JSON file.`);
 
 	// Teardown
 	await unlink(tempFile);
@@ -109,20 +109,20 @@ test('passing an HTTP url as path argument should initiate download', async t =>
 	// Server is created in the before hook
 	const fakeUrl = `http://localhost:${port}/fake_data.json`;
 	const logger = new Log();
-	const res = await importFn(fakeUrl, logger);
+	const res = await importConfig(fakeUrl, logger);
 	t.ok(res);
 });
 
 test('passing a url without protocol as path argument should first go through the local path and then fall back to the remote one (http)', async t => {
 	const fakeUrl = `localhost:${port}/fake_data.json`;
 	const logger = new Log();
-	const res = await importFn(fakeUrl, logger);
+	const res = await importConfig(fakeUrl, logger);
 	t.ok(res);
 });
 
 test('passing a url without protocol as path argument should first go through the local path and then fall back to the remote one (https)', async t => {
 	const apiUrl = 'randomuser.me/api/?results=1';
 	const logger = new Log();
-	const res = await importFn(apiUrl, logger);
+	const res = await importConfig(apiUrl, logger);
 	t.ok(res);
 });
