@@ -52,7 +52,7 @@ async function main(logger, options) {
 	}
 
 	// Fetch config either from file or from a prompt
-	const config = importConfigOpt ? await importConfig(importConfigOpt, logger, dryrun) : await prompt(questions);
+	const config = importConfigOpt ? await importConfig(importConfigOpt, logger) : await prompt(questions);
 
 	logger.debug(`main: ${config}`);
 
@@ -62,6 +62,7 @@ async function main(logger, options) {
 	// Add the export promise dinamically
 	if (exportConfigOpt) {
 		logger.debug(`main: Exporting config: ${JSON.stringify(minimizedConfig)}`);
+		console.log(exportConfig);
 		await exportConfig(minimizedConfig, logger, dryrun);
 	} else {
 		const filteredConfig = transformConfig(config);

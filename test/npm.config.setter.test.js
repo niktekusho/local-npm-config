@@ -1,5 +1,7 @@
 const {test, beforeEach} = require('tap');
-const mock = require('mock-require');
+const mock = require('proxyquire')
+	// Disable original module call
+	.noCallThru();
 
 let mockedGlobalConfig = {};
 let mockedGlobalConfigSaved = false;
@@ -22,9 +24,9 @@ class ConfigMock {
 	}
 }
 
-mock('@npmcli/config', ConfigMock);
-
-const setter = require('../src/npm.config.setter');
+const setter = mock('../src/npm.config.setter', {
+	'@npmcli/config': ConfigMock
+});
 const {Log} = require('./_utils');
 const Configuration = require('../src/configuration');
 

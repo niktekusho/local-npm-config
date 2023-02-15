@@ -73,5 +73,6 @@ class FSOperation {
 module.exports = {
 	ConfigExample,
 	FSOperation,
-	Log
+	Log,
+	noop
 };

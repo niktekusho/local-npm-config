@@ -1,19 +1,22 @@
 const {test} = require('tap');
-const mock = require('mock-require');
+
+const mock = require('proxyquire')
+	// Disable original module call
+	.noCallThru();
 
 const {FSOperation, Log} = require('../_utils');
 
-mock('fs', {
-	writeFile(path, data, opts, cb) {
-		cb(null, new FSOperation(path, data));
+const exporter = mock('../../src/io/export', {
+	fs: {
+		writeFile(path, data, opts, cb) {
+			cb(null, new FSOperation(path, data));
+		}
 	}
 });
 
 const logger = new Log();
 
 const {ConfigExample} = require('../_utils');
-
-const exporter = require('../../src/io/export');
 
 test('passing object should write the file in the current cwd', async t => {
 	const config = new ConfigExample('test');

@@ -1,19 +1,21 @@
 const {test} = require('tap');
-const mock = require('mock-require');
 
-mock('inquirer', {
-	registerPrompt: () => {},
-	prompt: questions => questions
+const mock = require('proxyquire')
+	// Disable original module call
+	.noCallThru();
+
+const prompt = mock('../src/prompt.js', {
+	inquirer: {
+		registerPrompt: () => { },
+		prompt: async questions => questions
+	}
 });
 
-const prompt = require('../src/prompt');
-
-test('prompt should be an async function', async t => {
+test('prompt should use inquirer to return get answers from the user', async t => {
 	const questions = [{
 		type: 'input',
 		name: 'test'
 	}];
 	const answers = await prompt(questions);
 	t.equal(answers, questions);
-	mock.stop('inquirer');
 });
