@@ -62,7 +62,6 @@ async function main (logger, options) {
   // Add the export promise dinamically
   if (exportConfigOpt) {
     logger.debug(`main: Exporting config: ${JSON.stringify(minimizedConfig)}`)
-    console.log(exportConfig)
     await exportConfig(minimizedConfig, logger, dryrun)
   } else {
     const filteredConfig = transformConfig(config)
