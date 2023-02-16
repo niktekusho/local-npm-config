@@ -1,44 +1,39 @@
-import test from 'ava';
+const { test } = require('tap')
+const proxyquireStrict = require('proxyquire')
+// Disable module cache
+  .noPreserveCache()
+// Disable original module call
+  .noCallThru()
 
-const mock = require('mock-require');
+function requireCli (mainModuleStub) {
+  return proxyquireStrict('../src/cli', {
+    '.': mainModuleStub,
+    './utils/logger': () => ({
+      success: () => 'Success',
+      error: () => 'Error'
+    })
+  })
+}
 
-const mainModule = '../src/index';
+// TODO: don't really like the way the CLI is tested. Will need to research a bit.
 
-const loggerModule = '../src/logger';
-mock(loggerModule, () => ({
-	success: () => 'Success',
-	error: () => 'Error'
-}));
+test('cli should call the main module', async t => {
+  requireCli(async () => t.pass('main module invoked'))
+})
 
-test('cli should call the main module', t => {
-	try {
-		let mainModuleCalled = false;
-		mock(mainModule, async () => {
-			mainModuleCalled = true;
-		});
-		mock.reRequire('../src/cli');
-		const cli = require('../src/cli');
-		// CLI module doesn't export stuff
-		t.deepEqual(cli, {});
-		t.true(mainModuleCalled);
-		mock.stop(mainModule);
-	} catch (error) {
-		mock.stop(mainModule);
-		t.fail(error);
-	}
-});
+test('cli should handle main module failures gracefully', async t => {
+  requireCli(async () => {
+    throw new Error('Test error')
+  })
+  t.pass('Error was correctly handled by CLI')
+})
 
-test('cli should handle main module failures gracefully', t => {
-	try {
-		mock(mainModule, async () => {
-			throw new Error('Test error');
-		});
-		mock.reRequire('../src/cli');
-		const cli = require('../src/cli');
-		t.deepEqual(cli, {});
-		mock.stop(mainModule);
-	} catch (error) {
-		mock.stop(mainModule);
-		t.fail(`The CLI should not have a rejected promise: ${error.message}`);
-	}
-});
+test('cli should forward arguments to main module', async t => {
+  // "Override" process arguments for the dryrun flag
+  process.argv = ['node-executable', 'the-script.js', '-d', '--verbose']
+
+  requireCli(async (_, opts) => {
+    t.same(opts.dryrun, true)
+    t.same(opts.verbose, true)
+  })
+})

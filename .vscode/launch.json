@@ -7,8 +7,7 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Run AVA test",
-            "program": "${workspaceFolder}/node_modules/ava/profile.js",
+            "name": "Run file",
             "args": [
               "${file}"
             ],

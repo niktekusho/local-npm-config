@@ -1,17 +1,44 @@
-const execa = require('execa');
+const { resolve, join } = require('path')
+const { homedir } = require('os')
 
-module.exports = (config, value, logger, dryrun) => {
-	logger.info(`Applying ${config}...`);
+const Config = require('@npmcli/config')
 
-	if (dryrun) {
-		const command = `npm set ${config}=${value} --location=user`;
-		logger.info(command);
-		return;
-	}
+/**
+ * Save npm user's info.
+ *
+ * @param {Array<Configuration>} config Configuration.
+ * @param {import("./types").Logger} logger Logger instance.
+ * @param {bool} dryrun `true` if the user only wants to print the expected operations and not execute them.
+ * @returns {Promise<void>}
+ */
+async function saveConfig (config, logger, dryrun) {
+  const npmConfig = new Config({
+    definitions: Config.typeDefs,
+    npmPath: resolve(__dirname, '..'),
+    // TODO: keep this until https://github.com/npm/cli/issues/6120 is answered with a proper solution
+    // Let process.env override what this function does
+    env: {
+      npm_config_userconfig: join(homedir(), '.npmrc'),
+      npm_config_registry: 'https://registry.npmjs.org/',
+      ...process.env
+    }
+  })
 
-	const {stdout, stderr, command} = execa.sync('npm', ['set', `${config}=${value}`, '--location=user']);
+  await npmConfig.load()
 
-	logger.debug(`Command executed: ${command}`);
-	// Log both of them in the verbose mode
-	logger.debug(`stdout: ${stdout}, stderr: ${stderr}`);
-};
+  for (const { key, value } of config) {
+    npmConfig.set(key, value, 'user')
+    logger.info(`Applying ${key} = ${value}`)
+  }
+
+  logger.debug(`Valid config? ${npmConfig.validate('user')}`)
+
+  if (dryrun) {
+    logger.info(JSON.stringify(npmConfig.data))
+    return
+  }
+
+  await npmConfig.save('user')
+}
+
+module.exports = saveConfig

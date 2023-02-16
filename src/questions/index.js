@@ -1,15 +1,15 @@
-const authorEmail = require('./author.email');
-const authorName = require('./author.name');
-const authorUrl = require('./author.url');
-const license = require('./license');
-const version = require('./version');
+const authorEmail = require('./author.email')
+const authorName = require('./author.name')
+const authorUrl = require('./author.url')
+const license = require('./license')
+const version = require('./version')
 
-const questions = [];
+const questions = []
 
-questions.push(authorName);
-questions.push(authorEmail);
-questions.push(authorUrl);
-questions.push(license);
-questions.push(version);
+questions.push(authorName)
+questions.push(authorEmail)
+questions.push(authorUrl)
+questions.push(license)
+questions.push(version)
 
-module.exports = questions;
+module.exports = questions

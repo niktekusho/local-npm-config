@@ -1,9 +1,9 @@
-const exportConfig = require('./export');
-const validate = require('./validator');
-const importConfig = require('./import');
+const exportConfig = require('./export')
+const validate = require('./validator')
+const importConfig = require('./import')
 
 module.exports = {
-	exportConfig,
-	importConfig,
-	validate
-};
+  exportConfig,
+  importConfig,
+  validate
+}

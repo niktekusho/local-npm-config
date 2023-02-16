@@ -23,18 +23,3 @@ export type Logger = {
      */
     error(msg: string): void
 };
-
-/**
- * Configuration type.
- */
-export type Configuration = {
-	/**
-	 * Key of the configuration.
-	 */
-	config: string,
-	/**
-	 * Value of the configuration.
-	 */
-	value: string,
-}
-

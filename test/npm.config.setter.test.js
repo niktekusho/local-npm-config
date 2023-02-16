@@ -1,54 +1,69 @@
-import test from 'ava';
+const { test, beforeEach } = require('tap')
+const mock = require('proxyquire')
+// Disable original module call
+  .noCallThru()
 
-const mock = require('mock-require');
+let mockedGlobalConfig = {}
+let mockedGlobalConfigSaved = false
 
-class ExecaMock {
-	constructor() {
-		this._ops = [];
-		this._return = (stdout, stderr) => ({stdout, stderr});
-	}
+class ConfigMock {
+  set (key, value, scope) {
+    const scopedConfig = mockedGlobalConfig[scope] ?? {}
+    scopedConfig[key] = value
+    mockedGlobalConfig[scope] = scopedConfig
+  }
 
-	sync(...args) {
-		const opType = 'sync';
-		this._ops.push({type: opType, args});
-		return this._return(opType, opType);
-	}
+  async load () {}
 
-	clear() {
-		this._ops.splice(0);
-	}
+  validate () {
+    return true
+  }
 
-	get ops() {
-		return this._ops;
-	}
-
-	get first() {
-		return this._ops.length > 0 ? this._ops[0] : undefined;
-	}
+  async save () {
+    mockedGlobalConfigSaved = true
+  }
 }
 
-const execaMock = new ExecaMock();
+const setter = mock('../src/npm.config.setter', {
+  '@npmcli/config': ConfigMock
+})
+const { Log } = require('./_utils')
+const Configuration = require('../src/configuration')
 
-mock('execa', execaMock);
+let mockedLogger
 
-const setter = require('../src/npm.config.setter');
-const {Log} = require('./_utils');
+beforeEach(() => {
+  mockedGlobalConfig = {}
+  mockedGlobalConfigSaved = false
+  mockedLogger = new Log()
+})
 
-test('setter should call execa with "npm set config value"', t => {
-	const mockedLogger = new Log();
-	execaMock.clear();
-	setter('testConfig', 'testValue', mockedLogger);
-	const cmd = execaMock.first;
-	t.truthy(cmd);
-	t.is(cmd.args[0], 'npm');
-	t.deepEqual(cmd.args[1], ['set', 'testConfig=testValue', '--location=user']);
-});
+test('setter should call npm config api with expected input and save', async t => {
+  const configToApply = [
+    new Configuration('testConfig', 'testValue'),
+    Configuration.initConfig('test', 'value')
+  ]
 
-test('setter should not call execa when dryrun option is true', t => {
-	const mockedLogger = new Log();
-	execaMock.clear();
-	setter('testConfig', 'testValue', mockedLogger, true);
-	const cmd = execaMock.first;
-	t.is(cmd, undefined);
-	t.true(mockedLogger.infos.length > 0);
-});
+  await setter(configToApply, mockedLogger)
+
+  const expectedConfig = {
+    user: {
+      testConfig: 'testValue',
+      'init-test': 'value'
+    }
+  }
+
+  t.same(mockedGlobalConfig, expectedConfig)
+  t.ok(mockedGlobalConfigSaved)
+})
+
+test('setter should not call save when dryrun option is true', async t => {
+  const configToApply = [
+    new Configuration('testConfig', 'testValue'),
+    Configuration.initConfig('test', 'value')
+  ]
+
+  await setter(configToApply, mockedLogger, true)
+
+  t.notOk(mockedGlobalConfigSaved)
+})
