@@ -7,7 +7,6 @@
         "localnpm": "src/cli.js"
     },
     "scripts": {
-        "coverage": "nyc --all --reporter lcov --reporter text ava",
         "lint": "standard --fix",
         "localLaunch": "node src/cli.js",
         "release": "np",
