@@ -25,15 +25,16 @@ async function createTempFile (fileName, content) {
   return tmpFilePath
 }
 
+const fixedResponseObj = {
+  author: {
+    name: 'test',
+    email: 'test@test.test'
+  },
+  license: 'MIT',
+  version: '0.1.0'
+}
+
 before(async () => {
-  const fixedResponseObj = {
-    author: {
-      name: 'test',
-      email: 'test@test.test'
-    },
-    license: 'MIT',
-    version: '0.1.0'
-  }
   const fixedResponseString = JSON.stringify(fixedResponseObj)
   server = await setupServer(fixedResponseString)
   port = server.address().port
@@ -109,7 +110,7 @@ test('passing an HTTP url as path argument should initiate download', async t =>
   const fakeUrl = `http://localhost:${port}/fake_data.json`
   const logger = new Log()
   const res = await importConfig(fakeUrl, logger)
-  t.ok(res)
+  t.same(res, fixedResponseObj)
 })
 
 test('passing a url without protocol as path argument should first go through the local path and then fall back to the remote one (http)', async t => {

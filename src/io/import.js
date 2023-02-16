@@ -1,7 +1,7 @@
 const { readFile, access } = require('fs/promises')
 const { basename } = require('path')
 
-const download = require('download')
+const { request } = require('undici')
 const prependCwd = require('prepend-cwd')
 
 /**
@@ -20,31 +20,31 @@ async function importConfig (pathToConfig, logger) {
     throw new Error('Path should be specified!')
   }
 
-  logger.debug(`importFn: ${pathToConfig}`)
+  logger.debug(`importConfig: ${pathToConfig}`)
 
   // Very naive way... (http and https)
   if (pathToConfig.startsWith('http')) {
-    logger.debug('importFn: Import from remote location')
+    logger.debug('importConfig: Import from remote location')
     // Directly go with the importRemote
     return importRemote(pathToConfig, logger)
   }
 
   // Local first when the path is dubious
   try {
-    logger.debug('importFn: Local first when in doubt!')
+    logger.debug('importConfig: Local first when in doubt!')
     return await importLocal(pathToConfig, logger)
   } catch (error) {
     // If internal error, rethrow
     if (error.name === 'NonJsonFileError') {
       throw error
     } else {
-      logger.debug(`importFn: Error caught: ${error.message}`)
-      // Might be http or https: by default download will append https via prepend-http
+      logger.debug(`importConfig: Error caught: ${error.message}`)
+      // Might be http or https: by default append https
       try {
-        const remoteHttp = await importRemote(pathToConfig, logger)
+        const remoteHttp = await importRemote(`https://${pathToConfig}`, logger)
         return remoteHttp
       } catch (remoteError) {
-        logger.debug(`importFn: ${remoteError}`)
+        logger.debug(`importConfig: ${remoteError}`)
         // Manually prepend http in case https failed
         return importRemote(`http://${pathToConfig}`, logger)
       }
@@ -62,8 +62,10 @@ async function importConfig (pathToConfig, logger) {
 async function importRemote (path, logger) {
   logger.info(`Downloading file from: ${path}`)
 
-  const content = await download(path)
-  logger.debug(`importRemote: ${content.toString('utf8')}`)
+  const { body } = await request(path)
+  const content = await body.text()
+
+  logger.debug(`importRemote: ${content}`)
 
   return parseContent(content, logger)
 }
