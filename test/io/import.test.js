@@ -40,7 +40,6 @@ before(async () => {
 })
 
 teardown(() => {
-  // eslint-disable-next-line no-eq-null, eqeqeq
   if (server != null) {
     server.close()
     server = null

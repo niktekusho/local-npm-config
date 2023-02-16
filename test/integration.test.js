@@ -12,7 +12,6 @@ const rootProjectDirPath = resolve(__dirname, '..')
 
 let backedUpExistingNpmrc = false
 
-// eslint-disable-next-line func-names
 before(async function setup () {
   try {
     // If backup creation fails, ignore silently
@@ -32,7 +31,6 @@ before(async function setup () {
   }
 })
 
-// eslint-disable-next-line func-names
 teardown(async function restoreBackup () {
   if (backedUpExistingNpmrc) {
     console.log('Restoring .npmrc backup')

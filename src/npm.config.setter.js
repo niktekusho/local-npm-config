@@ -18,9 +18,7 @@ async function saveConfig (config, logger, dryrun) {
     // TODO: keep this until https://github.com/npm/cli/issues/6120 is answered with a proper solution
     // Let process.env override what this function does
     env: {
-      // eslint-disable-next-line camelcase
       npm_config_userconfig: join(homedir(), '.npmrc'),
-      // eslint-disable-next-line camelcase
       npm_config_registry: 'https://registry.npmjs.org/',
       ...process.env
     }
