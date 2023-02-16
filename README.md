@@ -4,7 +4,7 @@
 [![](https://img.shields.io/npm/v/local-npm-config.svg)](https://www.npmjs.com/package/local-npm-config)
 [![](https://github.com/niktekusho/local-npm-config/workflows/Build%20Status/badge.svg)](https://github.com/niktekusho/local-npm-config/actions)
 [![](https://img.shields.io/node/v/local-npm-config.svg)](https://www.npmjs.com/package/local-npm-config)
-[![XO code style](https://img.shields.io/badge/code_style-XO-5ed9c7.svg)](https://github.com/sindresorhus/xo)
+[![JavaScript Style Guide](https://cdn.rawgit.com/standard/standard/master/badge.svg)](https://github.com/standard/standard)
 
 Do you work across multiple machines on JavaScript projects? If yes is your answer, then you might want to answer the question:
 

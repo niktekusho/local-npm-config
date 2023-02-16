@@ -1,78 +1,78 @@
 class ConfigExample {
-	constructor(name, email, url, license, version) {
-		this.author = {
-			name,
-			email,
-			url
-		};
-		this.license = license;
-		this.version = version;
-	}
+  constructor (name, email, url, license, version) {
+    this.author = {
+      name,
+      email,
+      url
+    }
+    this.license = license
+    this.version = version
+  }
 }
 
-function noop() {}
+function noop () {}
 
 class Log {
-	constructor(logger) {
-		// If a parent logger is not specified (example t.log from ava) then use a noop function
-		this._logger = logger || noop;
-		this._rows = [];
-	}
+  constructor (logger) {
+    // If a parent logger is not specified (example t.log from ava) then use a noop function
+    this._logger = logger || noop
+    this._rows = []
+  }
 
-	_handleLog(type, args) {
-		this._rows.push({type, args});
-		this._logger(args);
-	}
+  _handleLog (type, args) {
+    this._rows.push({ type, args })
+    this._logger(args)
+  }
 
-	debug(...args) {
-		this._handleLog('debug', args);
-	}
+  debug (...args) {
+    this._handleLog('debug', args)
+  }
 
-	info(...args) {
-		this._handleLog('info', args);
-	}
+  info (...args) {
+    this._handleLog('info', args)
+  }
 
-	warn(...args) {
-		this._handleLog('warn', args);
-	}
+  warn (...args) {
+    this._handleLog('warn', args)
+  }
 
-	error(...args) {
-		this._handleLog('error', args);
-	}
+  error (...args) {
+    this._handleLog('error', args)
+  }
 
-	/**
-	 * All log rows
-	 */
-	get logs() {
-		return this._rows;
-	}
+  /**
+   * All log rows
+   */
+  get logs () {
+    return this._rows
+  }
 
-	/**
-	 * Log rows of type "info"
-	 */
-	get infos() {
-		return this.logs.filter(({type}) => type === 'info');
-	}
+  /**
+   * Log rows of type "info"
+   */
+  get infos () {
+    return this.logs.filter(({ type }) => type === 'info')
+  }
 }
 
 class FSOperation {
-	constructor(path, data) {
-		this._path = path;
-		this._data = data;
-	}
+  constructor (path, data) {
+    this._path = path
+    this._data = data
+  }
 
-	get path() {
-		return this._path;
-	}
+  get path () {
+    return this._path
+  }
 
-	get data() {
-		return this._data;
-	}
+  get data () {
+    return this._data
+  }
 }
 
 module.exports = {
-	ConfigExample,
-	FSOperation,
-	Log,
-	noop
-};
+  ConfigExample,
+  FSOperation,
+  Log,
+  noop
+}

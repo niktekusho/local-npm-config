@@ -1,8 +1,8 @@
-const {readFile, access} = require('fs/promises');
-const {basename} = require('path');
+const { readFile, access } = require('fs/promises')
+const { basename } = require('path')
 
-const download = require('download');
-const prependCwd = require('prepend-cwd');
+const download = require('download')
+const prependCwd = require('prepend-cwd')
 
 /**
  * @typedef { import("../types").Logger } Logger
@@ -15,41 +15,41 @@ const prependCwd = require('prepend-cwd');
  * @param {Logger} logger Logger instance.
  * @returns {object} Configuration to import.
  */
-async function importConfig(pathToConfig, logger) {
-	if (pathToConfig === null || pathToConfig === undefined) {
-		throw new Error('Path should be specified!');
-	}
+async function importConfig (pathToConfig, logger) {
+  if (pathToConfig === null || pathToConfig === undefined) {
+    throw new Error('Path should be specified!')
+  }
 
-	logger.debug(`importFn: ${pathToConfig}`);
+  logger.debug(`importFn: ${pathToConfig}`)
 
-	// Very naive way... (http and https)
-	if (pathToConfig.startsWith('http')) {
-		logger.debug('importFn: Import from remote location');
-		// Directly go with the importRemote
-		return importRemote(pathToConfig, logger);
-	}
+  // Very naive way... (http and https)
+  if (pathToConfig.startsWith('http')) {
+    logger.debug('importFn: Import from remote location')
+    // Directly go with the importRemote
+    return importRemote(pathToConfig, logger)
+  }
 
-	// Local first when the path is dubious
-	try {
-		logger.debug('importFn: Local first when in doubt!');
-		return await importLocal(pathToConfig, logger);
-	} catch (error) {
-		// If internal error, rethrow
-		if (error.name === 'NonJsonFileError') {
-			throw error;
-		} else {
-			logger.debug(`importFn: Error caught: ${error.message}`);
-			// Might be http or https: by default download will append https via prepend-http
-			try {
-				const remoteHttp = await importRemote(pathToConfig, logger);
-				return remoteHttp;
-			} catch (remoteError) {
-				logger.debug(`importFn: ${remoteError}`);
-				// Manually prepend http in case https failed
-				return importRemote(`http://${pathToConfig}`, logger);
-			}
-		}
-	}
+  // Local first when the path is dubious
+  try {
+    logger.debug('importFn: Local first when in doubt!')
+    return await importLocal(pathToConfig, logger)
+  } catch (error) {
+    // If internal error, rethrow
+    if (error.name === 'NonJsonFileError') {
+      throw error
+    } else {
+      logger.debug(`importFn: Error caught: ${error.message}`)
+      // Might be http or https: by default download will append https via prepend-http
+      try {
+        const remoteHttp = await importRemote(pathToConfig, logger)
+        return remoteHttp
+      } catch (remoteError) {
+        logger.debug(`importFn: ${remoteError}`)
+        // Manually prepend http in case https failed
+        return importRemote(`http://${pathToConfig}`, logger)
+      }
+    }
+  }
 }
 
 /**
@@ -59,13 +59,13 @@ async function importConfig(pathToConfig, logger) {
  * @param {Logger} logger Logger instance.
  * @returns {object} Configuration to import.
  */
-async function importRemote(path, logger) {
-	logger.info(`Downloading file from: ${path}`);
+async function importRemote (path, logger) {
+  logger.info(`Downloading file from: ${path}`)
 
-	const content = await download(path);
-	logger.debug(`importRemote: ${content.toString('utf8')}`);
+  const content = await download(path)
+  logger.debug(`importRemote: ${content.toString('utf8')}`)
 
-	return parseContent(content, logger);
+  return parseContent(content, logger)
 }
 
 /**
@@ -75,25 +75,25 @@ async function importRemote(path, logger) {
  * @param {Logger} logger Logger instance.
  * @returns {object} Configuration to import.
  */
-function parseContent(fileContent, logger) {
-	let parsedJSON = {};
-	try {
-		parsedJSON = JSON.parse(fileContent);
-	} catch (error) {
-		throw new Error(`Could not parse content: ${fileContent}`, error);
-	}
+function parseContent (fileContent, logger) {
+  let parsedJSON = {}
+  try {
+    parsedJSON = JSON.parse(fileContent)
+  } catch (error) {
+    throw new Error(`Could not parse content: ${fileContent}`, error)
+  }
 
-	logger.info(`Parsed content: ${fileContent}`);
+  logger.info(`Parsed content: ${fileContent}`)
 
-	return parsedJSON;
+  return parsedJSON
 }
 
 class NonJsonFileError extends Error {
-	constructor(msg) {
-		super(msg);
-		Error.captureStackTrace(this, NonJsonFileError);
-		this.name = 'NonJsonFileError';
-	}
+  constructor (msg) {
+    super(msg)
+    Error.captureStackTrace(this, NonJsonFileError)
+    this.name = 'NonJsonFileError'
+  }
 }
 
 /**
@@ -103,23 +103,23 @@ class NonJsonFileError extends Error {
  * @param {Logger} logger Logger instance.
  * @returns {object} Configuration to import.
  */
-async function importLocal(path, logger) {
-	const toFile = prependCwd(path);
-	logger.debug(`importLocal: ${path} -> ${toFile}`);
+async function importLocal (path, logger) {
+  const toFile = prependCwd(path)
+  logger.debug(`importLocal: ${path} -> ${toFile}`)
 
-	// Check if file exists and user has appropriate permissions.
-	// It's fine to rethrow the error.
-	await access(toFile);
+  // Check if file exists and user has appropriate permissions.
+  // It's fine to rethrow the error.
+  await access(toFile)
 
-	if (basename(toFile).endsWith('.json')) {
-		logger.info(`Reading content from: ${toFile}`);
+  if (basename(toFile).endsWith('.json')) {
+    logger.info(`Reading content from: ${toFile}`)
 
-		const fileContent = await readFile(toFile, {encoding: 'utf8'});
+    const fileContent = await readFile(toFile, { encoding: 'utf8' })
 
-		return parseContent(fileContent, logger);
-	}
+    return parseContent(fileContent, logger)
+  }
 
-	throw new NonJsonFileError(`File with path ${toFile} is not a JSON file.`);
+  throw new NonJsonFileError(`File with path ${toFile} is not a JSON file.`)
 }
 
-module.exports = importConfig;
+module.exports = importConfig

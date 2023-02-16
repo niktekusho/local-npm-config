@@ -1,17 +1,17 @@
-const signale = require('signale');
+const signale = require('signale')
 
 // Simple wrap for now
-const originalDebug = signale.debug;
+const originalDebug = signale.debug
 
 signale.debug = (...args) => {
-	if (signale.verbose) {
-		return originalDebug(...args);
-	}
+  if (signale.verbose) {
+    return originalDebug(...args)
+  }
 
-	return 'Disabled';
-};
+  return 'Disabled'
+}
 
 module.exports = verbose => {
-	signale.verbose = verbose || false;
-	return signale;
-};
+  signale.verbose = verbose || false
+  return signale
+}
