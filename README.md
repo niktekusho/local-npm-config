@@ -16,7 +16,7 @@ The primary goal of this project is to make it easy to create, share and apply n
 
 ## Installation
 
-**Note:** to use this CLI application, you have to have installed [Node.js](https://nodejs.org/) and a console you can run commands into. The **minimum required version** of Node.js is: [14 - codename "Fermium"](https://github.com/nodejs/Release#release-schedule).
+**Note:** to use this CLI application, you have to have installed [Node.js](https://nodejs.org/) and a console you can run commands into. The **minimum required version** of Node.js is: [18 - codename "Hydrogen"](https://github.com/nodejs/Release#release-schedule).
 
 In your console, run the following command:
 
