@@ -1,4 +1,3 @@
-
 /**
  * Configuration type.
  */
