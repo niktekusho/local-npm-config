@@ -1,6 +1,6 @@
 const prompt = require('./prompt')
 const questions = require('./questions')
-const npmConfigSet = require('./npm.config.setter')
+const createNpmClient = require('./npm.config')
 const transformConfig = require('./utils/config.transformer')
 const minimize = require('./utils/object.minimizer')
 const {
@@ -51,23 +51,35 @@ async function main (logger, options) {
     logger.info('Applying local npm configuration from file')
   }
 
-  // Fetch config either from file or from a prompt
-  const config = importConfigOpt ? await importConfig(importConfigOpt, logger) : await prompt(questions)
+  const npmClient = createNpmClient(logger, dryrun)
 
-  logger.debug(`main: ${config}`)
-
-  const minimizedConfig = minimize(config)
-  logger.debug(`main: ${minimizedConfig}`)
-
-  // Add the export promise dinamically
   if (exportConfigOpt) {
+    const config = await npmClient.getConfig()
+    logger.debug(`main: ${config}`)
+
+    const tmpConfig = {}
+
+    // const tmp = config.pop()
+    // while (tmp) {
+    //   const { key, value } = tmp
+    //   if (key.includes('_')) {
+    //     tmpConfig
+    //   } else {
+    //     tmpConfig[key] = value
+    //   }
+    // }
+
+    const minimizedConfig = minimize(tmpConfig)
+    logger.debug(`main: ${minimizedConfig}`)
     logger.debug(`main: Exporting config: ${JSON.stringify(minimizedConfig)}`)
     await exportConfig(minimizedConfig, logger, dryrun)
   } else {
+    // Fetch config either from file or from a prompt
+    const config = importConfigOpt ? await importConfig(importConfigOpt, logger) : await prompt(questions)
     const filteredConfig = transformConfig(config)
     logger.debug(`main: ${filteredConfig}`)
 
-    await npmConfigSet(filteredConfig, logger, dryrun)
+    await npmClient.saveConfig(filteredConfig)
   }
 }
 

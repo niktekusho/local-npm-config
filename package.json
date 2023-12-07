@@ -11,7 +11,8 @@
         "localLaunch": "node src/cli.js",
         "release": "np",
         "prepublishOnly": "npm test",
-        "test": "standard && tap"
+        "test": "standard && tap",
+        "test:dev": "standard --fix && tap"
     },
     "license": "MIT",
     "devDependencies": {

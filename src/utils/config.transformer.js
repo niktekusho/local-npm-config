@@ -1,5 +1,5 @@
 const flatten = require('flat')
-const Configuration = require('../configuration')
+const { Configuration } = require('../configuration')
 
 /**
  * Transform the configuration to a npm compatible one.

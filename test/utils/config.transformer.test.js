@@ -1,5 +1,5 @@
 const { test } = require('tap')
-const Configuration = require('../../src/configuration')
+const { Configuration } = require('../../src/configuration')
 const transformer = require('../../src/utils/config.transformer')
 
 const answers = {

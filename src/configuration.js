@@ -1,6 +1,7 @@
 
 /**
  * Configuration type.
+ * @deprecated Use NpmInitConfiguration instead
  */
 class Configuration {
   /**
@@ -24,4 +25,45 @@ class Configuration {
   }
 }
 
-module.exports = Configuration
+/**
+ * Configuration object for npm init properties.
+ */
+class NpmInitConfiguration {
+  /**
+   * Create a new npm init configuration.
+   * By default all values are undefined if not specified.
+   * @param {Partial<NpmInitConfiguration>}
+   */
+  constructor ({ authorName, authorEmail, authorUrl, license, version } = {}) {
+    /**
+     * Name of the author of the npm project.
+     * @type {string?}
+     */
+    this.authorName = authorName
+    /**
+     * Email of the author of the npm project.
+     * @type {string?}
+     */
+    this.authorEmail = authorEmail
+    /**
+     * Url to the author's website.
+     * @type {string?}
+     */
+    this.authorUrl = authorUrl
+    /**
+     * License of the npm project.
+     * @type {string?}
+     */
+    this.license = license
+    /**
+     * Initial version of the npm project.
+     * @type {string?}
+     */
+    this.version = version
+  }
+}
+
+module.exports = {
+  Configuration,
+  NpmInitConfiguration
+}

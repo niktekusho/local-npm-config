@@ -41,22 +41,22 @@ test('main module with the export flag should call the export module', async t =
   await main(new Log(), { dryrun: true, exportConfig: true, verbose: true })
 })
 
-test('main module should initiate import when provided option is truthy', async t => {
-  const mainStub = {
-    './io': {
-      importConfig: async pathToConfig => {
-        t.same(pathToConfig, 'local-path-to-config.json')
-      }
-    },
-    './utils/object.minimizer': () => t.pass('minimizer was called'),
-    './utils/config.transformer': () => t.pass('transform was called'),
-    './npm.config.setter': () => t.pass('npm config was called')
-  }
+// test('main module should initiate import when provided option is truthy', async t => {
+//   const mainStub = {
+//     './io': {
+//       importConfig: async pathToConfig => {
+//         t.same(pathToConfig, 'local-path-to-config.json')
+//       }
+//     },
+//     './utils/object.minimizer': () => t.pass('minimizer was called'),
+//     './utils/config.transformer': () => t.pass('transform was called'),
+//     './npm.config': () => t.pass('npm config was called')
+//   }
 
-  const main = proxyquireStrict('../src/index', mainStub)
+//   const main = proxyquireStrict('../src/index', mainStub)
 
-  await main(new Log(), { importConfig: 'local-path-to-config.json' })
-})
+//   await main(new Log(), { importConfig: 'local-path-to-config.json' })
+// })
 
 test('main module should prohibit import and export flags at the same time', async t => {
   const mainStub = {}

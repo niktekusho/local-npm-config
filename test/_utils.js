@@ -1,3 +1,7 @@
+/**
+ * Example of configuration object
+ * @deprecated This should ideally be a "core" class, there's no reason to have it only in tests.
+ */
 class ConfigExample {
   constructor (name, email, url, license, version) {
     this.author = {
@@ -10,8 +14,10 @@ class ConfigExample {
   }
 }
 
+/** Function that does nothing. */
 function noop () {}
 
+/** Log class for testing */
 class Log {
   constructor (logger) {
     // If a parent logger is not specified (example t.log from ava) then use a noop function
@@ -55,16 +61,36 @@ class Log {
   }
 }
 
+/**
+ * Class to create objects related to file system operations.
+ */
 class FSOperation {
+  /**
+   * Create the File System operation.
+   * @param {string} path Path on which the File System operation was executed
+   * @param {unknown} data Additional data regarding the operation
+   */
   constructor (path, data) {
+    if (path === undefined || path === null) {
+      throw new TypeError(
+        'The File System operation path must be specified'
+      )
+    }
+
     this._path = path
     this._data = data
   }
 
+  /**
+   * Path on which the File System operation was executed
+   */
   get path () {
     return this._path
   }
 
+  /**
+   * Additional data regarding the operation
+   */
   get data () {
     return this._data
   }
